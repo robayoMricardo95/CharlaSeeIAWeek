@@ -1,0 +1,227 @@
+/* Python que piensa · estilos (reveal.js 5.1, tema white).
+   Paleta formal y serena: azul pizarra de base, un color sobrio por etapa. */
+
+:root {
+  --tinta: #1e2a3b;          /* texto principal */
+  --suave: #5d6b7e;          /* texto secundario */
+  --linea: #dfe4ec;
+  --fondo: #f7f8fb;
+  --caja: #ffffff;
+  --noche: #0f1e33;          /* portada y cierre */
+  --noche-2: #1c3557;
+  --acento: #2f5d8a;
+
+  --e1: #2b7a8b;             /* etapa 1 · El LLM básico   (petróleo) */
+  --e2: #3d7d5e;             /* etapa 2 · LangChain       (salvia)   */
+  --e3: #5a5fa8;             /* etapa 3 · LangGraph       (índigo)   */
+  --e4: #b9802f;             /* etapa 4 · API y front     (ámbar)    */
+  --bien: #2f7d55;
+  --mal: #b4443c;
+}
+
+/* ------------------------------------------------------------- base */
+.reveal-viewport { background: var(--fondo); }
+.reveal { font-family: "Inter", system-ui, sans-serif; color: var(--tinta); font-size: 32px; }
+.reveal .slides section { text-align: left; }
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: "Inter", system-ui, sans-serif; text-transform: none;
+  color: var(--tinta); letter-spacing: -0.02em; font-weight: 800;
+}
+.reveal h2 { font-size: 1.35em; margin-bottom: 0.45em; }
+.reveal h3 { font-size: 0.95em; color: var(--suave); font-weight: 600; margin: 0 0 0.3em; }
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal li + li { margin-top: 0.3em; }
+.reveal strong { color: var(--acento); }
+.reveal code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.85em; }
+.reveal pre { width: 100%; box-shadow: none; font-size: 0.48em; margin: 0.4em 0; }
+.reveal pre code { border-radius: 12px; padding: 16px 20px; }
+.reveal a { color: var(--acento); }
+.nota { font-size: 0.55em; color: var(--suave); margin-top: 0.8em; }
+
+/* ------------------------------------------------------------- cabecera de cada lámina */
+.cabecera { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 0.5em; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px; border-radius: 999px; font-weight: 700; color: #fff;
+}
+.chip img { height: 1.3em; margin: 0; }
+.chip.e1 { background: var(--e1); }
+.chip.e2 { background: var(--e2); }
+.chip.e3 { background: var(--e3); }
+.chip.e4 { background: var(--e4); }
+.donde { color: var(--suave); font-weight: 600; }
+.donde code { font-size: 1em; }
+
+/* ------------------------------------------------------------- portada */
+.portada h1 { color: #fff; font-size: 2.3em; line-height: 1.05; margin: 0.2em 0 0.15em; }
+.portada .sub { color: #c9d6ea; font-size: 0.95em; }
+.portada .quien { color: #93a7c4; font-size: 0.6em; margin-top: 0.3em; }
+.portada .logos { display: flex; gap: 34px; align-items: center; margin-bottom: 0.4em; }
+.portada .logos img { height: 64px; margin: 0; }
+.objetivo {
+  margin-top: 1.1em; padding: 18px 24px; border-radius: 14px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+  color: #e6edf7; font-size: 0.7em; line-height: 1.45;
+}
+.objetivo b { color: #ffd166; }
+
+/* ------------------------------------------------------------- ruta (las 4 etapas) */
+.ruta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 0.4em; }
+.etapa {
+  background: var(--caja); border: 1px solid var(--linea); border-radius: 16px;
+  padding: 18px; font-size: 0.55em; border-top: 8px solid;
+}
+.etapa.e1 { border-top-color: var(--e1); }
+.etapa.e2 { border-top-color: var(--e2); }
+.etapa.e3 { border-top-color: var(--e3); }
+.etapa.e4 { border-top-color: var(--e4); }
+.etapa .num { font-size: 2.2em; font-weight: 800; color: var(--suave); line-height: 1; }
+.etapa h4 { font-family: "Inter", system-ui, sans-serif; font-weight: 800; color: var(--tinta); font-size: 1.25em; margin: 0.25em 0 0.4em; text-transform: none; letter-spacing: -0.01em; }
+.etapa .logos { display: flex; gap: 10px; align-items: center; height: 34px; margin-bottom: 8px; }
+.etapa .logos img { height: 30px; margin: 0; }
+.etapa ul { margin: 0 0 0 1em; }
+.etapa code { font-size: 0.85em; color: var(--suave); }
+
+/* ------------------------------------------------------------- separador de etapa */
+.separador h1 { color: #fff; font-size: 2.4em; margin: 0.1em 0; }
+.separador .numero { color: rgba(255,255,255,0.55); font-size: 1.1em; font-weight: 800; }
+.separador .que { color: rgba(255,255,255,0.92); font-size: 0.8em; max-width: 900px; }
+.separador .nb {
+  display: inline-block; margin-top: 1em; padding: 8px 16px; border-radius: 10px;
+  background: rgba(255,255,255,0.15); color: #fff; font-size: 0.55em; font-weight: 600;
+}
+.separador .logos { display: flex; gap: 26px; align-items: center; margin-top: 1.2em; }
+.separador .logos img { height: 52px; margin: 0; }
+
+/* ------------------------------------------------------------- piezas */
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.caja {
+  background: var(--caja); border: 1px solid var(--linea); border-radius: 14px;
+  padding: 16px 20px; font-size: 0.66em;
+}
+.caja.bien { border-left: 7px solid var(--bien); }
+.caja.mal { border-left: 7px solid var(--mal); }
+.caja .logo { height: 40px; margin: 0 0 8px; }
+.caja p { margin: 0.35em 0; }
+
+.cifras { display: flex; gap: 20px; margin: 0.5em 0; }
+.cifra { flex: 1; background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 14px 18px; }
+.cifra .valor { font-size: 1.45em; font-weight: 800; color: var(--acento); line-height: 1.1; }
+.cifra .etiqueta { font-size: 0.5em; color: var(--suave); margin-top: 6px; }
+.cifra.bien .valor { color: var(--bien); }
+.cifra.mal .valor { color: var(--mal); }
+
+.frase {
+  font-size: 1.15em; font-weight: 800; line-height: 1.25; margin: 0.5em 0 0;
+  border-left: 7px solid var(--acento); padding-left: 0.55em;
+}
+.frase.mal { border-color: var(--mal); }
+
+.reveal table { font-size: 0.58em; border-collapse: collapse; width: 100%; margin: 0.4em 0; background: var(--caja); }
+.reveal table th { background: #eef2f7; font-weight: 700; }
+.reveal table th, .reveal table td { border: 1px solid var(--linea); padding: 7px 12px; }
+.reveal table tbody tr:last-child td { border-bottom: 1px solid var(--linea); }
+.reveal td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.reveal .ok { color: var(--bien); font-weight: 700; }
+.reveal .no { color: var(--mal); font-weight: 700; }
+
+.flujo { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0.6em 0; flex-wrap: wrap; }
+.paso {
+  background: var(--caja); border: 2px solid var(--acento); border-radius: 12px;
+  padding: 10px 16px; font-size: 0.56em; font-weight: 700; text-align: center; min-width: 140px;
+}
+.paso small { display: block; font-weight: 400; color: var(--suave); margin-top: 3px; }
+.paso img { height: 30px; margin: 0 0 4px; }
+.flecha { color: var(--suave); font-size: 1em; }
+
+.ir {
+  display: inline-block; margin: 0.6em 12px 0 0; padding: 8px 16px; border-radius: 10px;
+  font-size: 0.52em; font-weight: 700; text-decoration: none;
+  background: var(--caja); border: 1px solid var(--linea);
+}
+
+/* Un bloque de código dentro de dos columnas no se estira hasta la altura de la otra. */
+.dos > pre { align-self: start; }
+
+/* ------------------------------------------------------------- portada centrada */
+.reveal .slides section.portada.centrada { text-align: center; }
+.portada.centrada .logos { justify-content: center; }
+.portada .autor { color: #ffffff; font-size: 0.8em; font-weight: 700; margin: 0.6em 0 0; }
+.portada.centrada .objetivo { text-align: left; max-width: 1050px; margin-left: auto; margin-right: auto; }
+
+/* ------------------------------------------------------------- proveedores y frameworks */
+.reveal table.proveedores { font-size: 0.5em; }
+.reveal table.proveedores td { vertical-align: middle; }
+.reveal table.proveedores img { height: 1.4em; margin: 0 6px 0 0; vertical-align: middle; }
+.langgraph-caja {
+  margin-top: 0.5em; padding: 12px 18px; border-radius: 14px;
+  background: #eef4f1; border: 1px solid #cfe1d7; font-size: 0.5em;
+}
+.langgraph-caja .lg-titulo { display: flex; align-items: center; gap: 14px; font-weight: 800; font-size: 1.15em; }
+.langgraph-caja .lg-titulo img { height: 1.7em; margin: 0; }
+.langgraph-caja ul { margin: 0.4em 0 0 1.1em; }
+.langgraph-caja li + li { margin-top: 0.15em; }
+.langgraph-caja .lg-sub { margin: 0.5em 0 0; font-weight: 700; color: var(--e2); text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.04em; }
+.reveal p.intro { font-size: 0.75em; }
+.reveal ul.compacta { font-size: 0.72em; }
+
+/* ------------------------------------------------------------- precios por gama */
+.reveal table.precios { font-size: 0.5em; text-align: center; }
+.reveal table.precios th img { height: 1.3em; margin: 0 6px 0 0; vertical-align: middle; }
+.reveal table.precios td:first-child { text-align: left; }
+.reveal table.precios td small { display: block; color: var(--suave); font-weight: 400; }
+.reveal table.precios b { color: var(--tinta); font-size: 1.1em; }
+.reveal table.precios tr.destacada td { background: #eef4f6; }
+.tres .caja h3 { font-size: 1.05em; color: var(--e1); }
+
+/* ------------------------------------------------------------- precios: leer / escribir */
+.reveal table.precios td .modelo { display: block; font-weight: 700; margin-bottom: 4px; }
+.reveal table.precios td .tarifa { display: block; color: var(--suave); }
+.reveal table.precios td .tarifa b { color: var(--tinta); }
+
+/* ------------------------------------------------------------- la ruta antes de cada etapa */
+.siguiente { font-size: 0.6em; font-weight: 700; color: var(--suave); margin: -0.4em 0 0.4em; }
+.ruta-slide .etapa { opacity: 0.38; transition: none; }
+.ruta-slide.activa-1 .etapa.e1, .ruta-slide.activa-2 .etapa.e2,
+.ruta-slide.activa-3 .etapa.e3, .ruta-slide.activa-4 .etapa.e4 {
+  opacity: 1; box-shadow: 0 10px 28px rgba(30, 42, 59, 0.16); transform: translateY(-6px);
+}
+
+/* La lámina de precios lleva mucho: todo un poco más compacto. */
+.lamina-precios h2 { margin-bottom: 0.25em; }
+.lamina-precios p.intro { font-size: 0.62em; margin: 0 0 0.3em; }
+.reveal .lamina-precios table.precios { font-size: 0.44em; margin: 0.2em 0; }
+.reveal .lamina-precios table.precios td, .reveal .lamina-precios table.precios th { padding: 5px 10px; }
+.lamina-precios .tres { gap: 14px; margin-top: 0.3em; }
+.lamina-precios .tres .caja { font-size: 0.5em; padding: 10px 14px; }
+
+/* ------------------------------------------------------------- paquetes de LangChain */
+.reveal table.paquetes { font-size: 0.44em; }
+.reveal table.paquetes td, .reveal table.paquetes th { padding: 5px 10px; }
+.reveal table.paquetes code { font-size: 0.95em; }
+.reveal .suave { color: var(--suave); font-style: italic; }
+
+/* ------------------------------------------------------------- etapa 3 */
+.reveal p.definicion {
+  font-size: 0.6em; margin: -0.2em 0 0.5em; padding: 10px 16px; border-radius: 12px;
+  background: #eef0f8; border-left: 6px solid var(--e3);
+}
+.grafo-explicado { display: grid; grid-template-columns: 300px 1fr; gap: 34px; align-items: center; }
+.grafo-explicado img.grafo { width: 100%; margin: 0; border-radius: 12px; background: #fff; border: 1px solid var(--linea); padding: 10px; }
+.reveal ol.compacta { font-size: 0.66em; margin-left: 1.2em; }
+.reveal ol.compacta li + li { margin-top: 0.3em; }
+
+/* ------------------------------------------------------------- cierre: el valor */
+.reveal .slides section.cierre { text-align: center; }
+.cierre h1 { font-size: 1.7em; margin-bottom: 0.4em; }
+.valor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: left; }
+.valor-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 14px; padding: 16px 18px; border-top: 5px solid #ffd166;
+}
+.valor-card h4 { color: #fff; font-size: 0.62em; margin: 0 0 0.4em; text-transform: none; font-family: "Inter", sans-serif; }
+.valor-card p { color: #d5deeb; font-size: 0.5em; line-height: 1.4; margin: 0; }
+.valor-card b, .cierre .controles b, .cierre .sub b { color: #ffd166; }
+.cierre .controles { color: #e6edf7; font-size: 0.62em; margin: 0.8em 0 0.4em; }
+.cierre .sub { font-size: 0.55em !important; color: #93a7c4 !important; }

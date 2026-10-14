@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Del agente al producto</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="producto.css">
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ================================================================== PORTADA -->
+<section class="portada centrada" data-background-gradient="linear-gradient(135deg, #0f1e33 0%, #1c3557 100%)">
+  <div class="logos cuatro">
+    <img src="img/python.svg" alt="Python">
+    <img src="img/langchain-blanco.svg" alt="LangChain">
+    <img src="img/langgraph-blanco.svg" alt="LangGraph">
+    <img src="img/fastapi.svg" alt="FastAPI">
+  </div>
+  <div class="logos front">
+    <img src="img/react.svg" alt="React">
+    <img src="img/html5.svg" alt="HTML">
+    <img src="img/css3.svg" alt="CSS">
+    <img src="img/javascript.svg" alt="JavaScript">
+    <span>React · HTML · CSS · JavaScript</span>
+  </div>
+  <h1>Del agente al producto</h1>
+  <p class="sub">Una plataforma de analítica con IA lista para usuarios</p>
+  <p class="autor">Ricardo Robayo</p>
+  <p class="quien">IA Week · 2026 octubre</p>
+  <div class="objetivo">
+    <b>Objetivo:</b> llevar el agente de <em>Python que piensa</em> a un <b>producto</b>: un grafo de
+    agentes especializados que razona, <b>calcula en un sandbox aislado</b>, verifica cada cifra contra la base
+    y guarda el historial y el costo de cada conversación, todo sobre <b>datos públicos</b>.
+  </div>
+  <aside class="notes">
+    Abrir con el objetivo y con la continuidad: es el mismo agente de la charla anterior, ahora con las piezas
+    que le faltaban para que lo use alguien que no lo construyó. Datos: reclamos médicos SINTÉTICOS del CMS
+    (Medicare). Decirlo en voz alta. Completar el lugar y la fecha del evento.
+  </aside>
+</section>
+
+<!-- ================================================================== RECAPITULACIÓN FUSIONADA (propuesta) -->
+<section class="fusion">
+  <div class="cabecera"><span class="chip resumen">Recapitulación</span><span class="donde">Python que piensa · 7 de octubre de 2026</span></div>
+  <h2>Qué es, qué aprendimos y qué falta</h2>
+  <p class="intro">El agente de la charla anterior, en cuatro piezas:</p>
+  <div class="ruta">
+    <div class="etapa e1">
+      <div class="num">1</div><h4>El LLM básico</h4>
+      <div class="logos"><img src="img/azure.svg" alt="Azure"><img src="img/openai.svg" alt="OpenAI"><img src="img/claude.svg" alt="Claude"></div>
+      <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El cerebro: un modelo que entiende y genera texto.</div>
+      <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>Solo no conoce nuestros datos ni la fecha de hoy, y cobra por cada token.</div>
+      <div class="bloque falta"><span class="rotulo">Falta</span>Medir cuánto cuesta cada pregunta y cada conversación: ya no es una llamada suelta al LLM, sino un <b>sistema conversacional</b>.</div>
+    </div>
+    <div class="etapa e2">
+      <div class="num">2</div><h4>LangChain</h4>
+      <div class="logos"><img src="img/langchain.svg" alt="LangChain"><img src="img/sqlite.svg" alt="SQLite"></div>
+      <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El habilitador para usar el modelo: prompts, roles y herramientas del agente.</div>
+      <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>Un <b>RAG de ejemplos</b>: con consultas de muestra, el modelo replica y adapta el SQL para preguntas nuevas.</div>
+      <div class="bloque falta"><span class="rotulo">Falta</span>Un <b>RAG de definiciones</b>: explicarle el negocio para que, con pocos ejemplos, entienda cómo usar la base.</div>
+    </div>
+    <div class="etapa e3">
+      <div class="num">3</div><h4>LangGraph</h4>
+      <div class="logos"><img src="img/langgraph.svg" alt="LangGraph"></div>
+      <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El orquestador: el flujo que coordina los pasos y agentes hechos con LangChain.</div>
+      <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>El agente es un ciclo: decide cuántas consultas hacer y recuerda el hilo.</div>
+      <div class="bloque falta"><span class="rotulo">Falta</span>Repartir el trabajo entre agentes y llevar los cálculos a un sandbox aislado: cifras exactas y a salvo de una <em>prompt injection</em>.</div>
+    </div>
+    <div class="etapa e4">
+      <div class="num">4</div><h4>API y front</h4>
+      <div class="logos"><img src="img/fastapi.svg" alt="FastAPI"><img src="img/streamlit.svg" alt="Streamlit"></div>
+      <div class="bloque quees"><span class="rotulo">¿Qué es?</span>La API pone el agente en producción; el front permite verlo e interactuar.</div>
+      <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>El agente funciona como servicio, con un chat para usarlo.</div>
+      <div class="bloque falta"><span class="rotulo">Falta</span>Varios usuarios con historial, y un <b>front propio</b> para auditar quién pregunta, qué pregunta y cuánto cuesta: así medimos el impacto y el <b>retorno de la inversión</b>.</div>
+    </div>
+  </div>
+  <p class="frase">Lo que aprendimos es el motor. Lo que falta es el producto: de eso trata esta charla.</p>
+  <aside class="notes">
+    Una pasada rápida por las cuatro etapas, sin volver a explicarlas: lo que dejó cada una y lo que le faltaba.
+    La fila de abajo es el temario de hoy: costo por conversación (un sistema que hace varias llamadas al
+    modelo por respuesta, no una pregunta suelta); pasar de un RAG de ejemplos (copia y adapta
+    consultas) a un RAG de definiciones (entiende el negocio y arma consultas nuevas con pocos ejemplos);
+    agentes especializados con un sandbox para los cálculos, y el producto multiusuario con un front que deja
+    auditar quién pregunta, qué pregunta y cuánto cuesta, que es lo que permite medir el retorno de la inversión.
+    Sobre el sandbox, en una frase: cuando la respuesta depende de una cuenta, el modelo no la hace de cabeza;
+    escribe el código y un recurso aparte lo ejecuta, así la cifra es exacta. Ese recurso está aislado (sin red,
+    sin disco, sin credenciales): si un texto malicioso lograra que el modelo escriba código dañino (prompt
+    injection), no puede salir de ahí. El detalle viene en las láminas del sandbox y de Claude.
+  </aside>
+</section>
+
+<!-- ================================================================== VERSIÓN 1 FRENTE A CLAUDE -->
+<section class="v1-claude">
+  <div class="cabecera"><span class="chip e3">Versión 1 y dos caminos</span><span class="donde">Cómo perfeccionar el agente de la clase anterior</span></div>
+  <h2>De la versión 1, dos caminos para mejorarla</h2>
+  <div class="dos">
+    <div class="caja v1"><h3>Versión 1 · un agente ReAct, el de la clase anterior</h3>
+      <div class="v1-grande">
+        <div class="grafo-v1"><img src="img/grafo_agente.png" alt="Grafo de la versión 1: start, model, tools, end"></div>
+        <div class="que-hace">
+          <p>El agente por defecto de LangGraph: <strong>un modelo y n herramientas</strong>. Así responde:</p>
+          <ol>
+            <li>El modelo escribe el SQL.</li>
+            <li>Una tool lo ejecuta en <strong>solo lectura</strong>.</li>
+            <li>Con el resultado, redacta.</li>
+            <li>Repite <code>model ⇄ tools</code> las veces que necesita y <strong>recuerda el hilo</strong>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="limites">
+        <div class="tarjeta">
+          <div class="etiqueta-l">Límite 1</div>
+          <div class="titulo-l">Calcula de cabeza</div>
+          <div class="cifras-l">
+            <span>Corrida 1</span><b class="mal-l">258&nbsp;206&nbsp;340 ✗</b>
+            <span>Corrida 2</span><b class="mal-l">258&nbsp;185&nbsp;900 ✗</b>
+            <span>Real</span><b class="bien-l">258&nbsp;063&nbsp;920 ✓</b>
+          </div>
+          <div class="pie-l">Pagado hospitalario 2008. Resolvió varias acciones seguidas, pero estimó la cifra.</div>
+        </div>
+        <div class="tarjeta">
+          <div class="etiqueta-l">Límite 2</div>
+          <div class="titulo-l">Aprende de ejemplos</div>
+          <div class="contraste">
+            <div class="si"><i>✓</i><div>Una muestra de preguntas<small>aprende a responder</small></div></div>
+            <div class="no"><i>✗</i><div>Definiciones de negocio<small>no aprende a razonar</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="opciones">
+      <div class="opcion a">
+        <h3><img src="img/claude.svg" alt="">Opción A · Usar Claude</h3>
+        <p>Reúne el <strong>LLM</strong>; la capacidad de desarrollar <strong>skills</strong>, con el conocimiento del negocio y el mapa para usar las herramientas de Claude; un <strong>puerto MCP</strong> hacia las bases con las que se decide; y un <strong>sandbox</strong> que ejecuta, controlado, análisis, documentos y reportes HTML.</p>
+        <div class="balanza">
+          <div class="pro"><b>A favor</b>Rápido: lo difícil ya viene hecho y entrega piezas terminadas.</div>
+          <div class="contra"><b>En contra</b>Topes de uso, menos control y un MCP propio que desarrollar.</div>
+        </div>
+        <div class="tiempos">
+          <div class="tiempo"><b>1 a 2 semanas</b>beta funcional (casos prácticos vistos)</div>
+          <div class="tiempo"><b>1,5 a 2 meses</b>producto entregable, ~95&nbsp;% de las preguntas</div>
+        </div>
+      </div>
+      <div class="opcion b">
+        <h3>Opción B · Construirlo nosotros</h3>
+        <div class="stack">
+          <img src="img/python.svg" alt="Python"><img src="img/langgraph.svg" alt="LangGraph"><img src="img/fastapi.svg" alt="FastAPI">
+          <img src="img/react.svg" alt="React"><img src="img/html5.svg" alt="HTML"><img src="img/css3.svg" alt="CSS"><img src="img/javascript.svg" alt="JavaScript">
+        </div>
+        <p>Replicamos a Claude con piezas propias: el agente en Python y el front en React.</p>
+        <div class="balanza">
+          <div class="pro"><b>A favor</b>Gestión 100&nbsp;% nuestra y sin topes de uso: costos, seguridad, datos, auditoría.</div>
+          <div class="contra"><b>En contra</b>Más tiempo de desarrollo y un equipo que lo mantenga.</div>
+        </div>
+        <div class="vibe">No sabemos construir interfaces: el <b>vibe coding</b> cierra esa brecha, pero hay que estudiar lo básico de <b>frontend y backend</b> para saber conectar cada pieza.</div>
+      </div>
+    </div>
+  </div>
+  <p class="frase">Rápido con Claude, o con control total construyéndolo nosotros.</p>
+  <aside class="notes">
+    Izquierda: el agente de la clase anterior. ReAct = razona y actúa (Reason + Act); no confundir con React,
+    la librería del front. Recordar cómo funcionaba y su límite: hacía las cuentas de cabeza.
+    Opción A, Claude: dispone de un puerto MCP para conectar nuestras bases, un sandbox para calcular y generar
+    archivos, y skills con el conocimiento del negocio. En casos prácticos vistos: beta funcional en una a dos
+    semanas; producto entregable en mes y medio a dos meses, que responde cerca del 95 % de las preguntas del
+    negocio, con tableros que se actualizan solos para la gerencia y el directorio. El MCP no viene hecho: hay
+    que construirlo en Python, desplegarlo en la nube (por ejemplo una web app), proteger su endpoint y
+    conectarlo a Claude.
+    Opción B, construirlo nosotros: control total, sin topes de uso. Nuestro punto débil como científicos de
+    datos e ingenieros de IA es el front; el vibe coding lo resuelve. Lo detallamos al final de la charla.
+  </aside>
+</section>
+
+<!-- ================================================================== CLAUDE COMO PLATAFORMA -->
+<section class="plataforma">
+  <div class="cabecera"><span class="chip claude"><img src="img/claude.svg" alt="">Opción A · Usar Claude</span><span class="donde">Lo que trae listo, y lo que cuesta usarlo</span></div>
+  <h2>Opción A: Claude, lo que aporta y lo que cuesta</h2>
+  <div class="plat2">
+    <div class="diagrama"><h3>Cómo trabaja Claude, a grandes rasgos</h3>
+      <svg viewBox="0 0 480 430" role="img" aria-label="Seis pasos: pregunta, Claude, skills, MCP, sandbox y respuesta">
+        <defs>
+          <filter id="sombra" x="-20%" y="-20%" width="140%" height="160%">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1e2a3b" flood-opacity="0.12"/>
+          </filter>
+          <marker id="punta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,1 L9,5 L0,9 z" fill="#b4bdca"/>
+          </marker>
+        </defs>
+
+        <!-- conexiones -->
+        <path d="M240,54 V92" stroke="#b4bdca" stroke-width="2" fill="none" marker-end="url(#punta)"/>
+        <path d="M196,198 Q140,236 82,266" stroke="#d9a58f" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#punta)"/>
+        <path d="M240,222 V264" stroke="#d9a58f" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#punta)"/>
+        <path d="M284,198 Q340,236 398,266" stroke="#d9a58f" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#punta)"/>
+        <text x="300" y="250" font-family="Inter" font-size="11" font-style="italic" fill="#8a96a8">orquesta</text>
+        <path d="M152,318 H166" stroke="#b4bdca" stroke-width="2" fill="none" marker-end="url(#punta)"/>
+        <path d="M314,318 H328" stroke="#b4bdca" stroke-width="2" fill="none" marker-end="url(#punta)"/>
+        <path d="M400,364 Q400,404 322,404" stroke="#b4bdca" stroke-width="2" fill="none" marker-end="url(#punta)"/>
+
+        <!-- 1 · pregunta -->
+        <g filter="url(#sombra)"><rect x="160" y="10" width="160" height="44" rx="22" fill="#2f5d8a"/></g>
+        <circle cx="184" cy="32" r="12" fill="#fff"/><text x="184" y="37" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#2f5d8a">1</text>
+        <text x="250" y="37" text-anchor="middle" font-family="Inter" font-size="15" font-weight="700" fill="#fff">Pregunta</text>
+
+        <!-- 2 · Claude, el núcleo -->
+        <g filter="url(#sombra)"><circle cx="240" cy="158" r="64" fill="#fbeee8" stroke="#c96442" stroke-width="2.5"/></g>
+        <image href="img/claude.svg" x="226" y="112" width="28" height="28"/>
+        <text x="240" y="162" text-anchor="middle" font-family="Inter" font-size="17" font-weight="800" fill="#1e2a3b">Claude</text>
+        <text x="240" y="181" text-anchor="middle" font-family="Inter" font-size="11.5" fill="#5d6b7e">razona y orquesta</text>
+        <circle cx="190" cy="112" r="12" fill="#c96442"/><text x="190" y="117" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#fff">2</text>
+
+        <!-- 3, 4, 5 · las herramientas -->
+        <g filter="url(#sombra)"><rect x="12" y="270" width="140" height="94" rx="14" fill="#fff" stroke="#dfe4ec"/></g>
+        <circle cx="36" cy="294" r="12" fill="#5a5fa8"/><text x="36" y="299" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#fff">3</text>
+        <text x="56" y="299" font-family="Inter" font-size="15" font-weight="800" fill="#1e2a3b">Skills</text>
+        <text x="26" y="326" font-family="Inter" font-size="11.5" fill="#5d6b7e">conocimiento</text>
+        <text x="26" y="342" font-family="Inter" font-size="11.5" fill="#5d6b7e">y mapa del negocio</text>
+
+        <g filter="url(#sombra)"><rect x="170" y="270" width="140" height="94" rx="14" fill="#fff" stroke="#dfe4ec"/></g>
+        <circle cx="194" cy="294" r="12" fill="#2b7a8b"/><text x="194" y="299" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#fff">4</text>
+        <text x="214" y="299" font-family="Inter" font-size="15" font-weight="800" fill="#1e2a3b">MCP</text>
+        <text x="184" y="326" font-family="Inter" font-size="11.5" fill="#5d6b7e">trae los datos</text>
+        <text x="184" y="342" font-family="Inter" font-size="11.5" fill="#5d6b7e">de nuestras bases</text>
+
+        <g filter="url(#sombra)"><rect x="328" y="270" width="140" height="94" rx="14" fill="#fff" stroke="#dfe4ec"/></g>
+        <circle cx="352" cy="294" r="12" fill="#b9802f"/><text x="352" y="299" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#fff">5</text>
+        <text x="372" y="299" font-family="Inter" font-size="15" font-weight="800" fill="#1e2a3b">Sandbox</text>
+        <text x="342" y="326" font-family="Inter" font-size="11.5" fill="#5d6b7e">calcula y genera</text>
+        <text x="342" y="342" font-family="Inter" font-size="11.5" fill="#5d6b7e">análisis y HTML</text>
+
+        <!-- 6 · respuesta -->
+        <g filter="url(#sombra)"><rect x="160" y="382" width="160" height="44" rx="22" fill="#1e2a3b"/></g>
+        <circle cx="184" cy="404" r="12" fill="#fff"/><text x="184" y="409" text-anchor="middle" font-family="Inter" font-size="13" font-weight="800" fill="#1e2a3b">6</text>
+        <text x="250" y="409" text-anchor="middle" font-family="Inter" font-size="15" font-weight="700" fill="#fff">Respuesta</text>
+      </svg>
+    </div>
+    <div class="derecha">
+      <div class="rotulo-seccion def">Definiciones</div>
+      <div class="defi"><b class="n">Skills</b>Le entregan el conocimiento del negocio y el orden en que usar cada herramienta.
+        <div class="caso">En nuestro caso: el diccionario y sus trampas</div></div>
+      <div class="defi"><b class="n">MCP</b>Claude trae el puerto; nosotros desarrollamos el MCP que conecta nuestras fuentes. Es lo único que mantenemos.
+        <div class="caso">En nuestro caso: la base de reclamos</div></div>
+      <div class="defi"><b class="n">Sandbox y artefactos</b>Ejecuta el código y entrega análisis, documentos y tableros HTML que se actualizan solos y, como el chat, se comparten.
+        <div class="caso">En nuestro caso: los cálculos y el informe</div></div>
+      <div class="rotulo-seccion req-t">Requisitos</div>
+      <div class="reqs"><ul>
+        <li>Una base de datos consolidada.</li>
+        <li>Un MCP propio en una <strong>Azure Web App</strong> desarrollada en Python.</li>
+        <li><strong>Seguridad</strong>: el endpoint del MCP protegido con <strong>OAuth&nbsp;2.1</strong>.</li>
+        <li>Una cuenta corporativa de Claude.</li>
+      </ul></div>
+      <div class="rotulo-seccion lim">Limitaciones</div>
+      <div class="limit">
+        <ul>
+          <li>El uso tiene tope: una <strong>ventana de 5 horas</strong> y un límite semanal.</li>
+          <li>El plan de USD&nbsp;20 se queda corto para <strong>investigación profunda</strong> o uso intensivo.</li>
+          <li>Menos control fino: no decidimos cada paso ni cada chequeo, como en nuestro grafo.</li>
+        </ul>
+        <table>
+          <tr><th>Plan</th><th>Precio al mes</th><th>Uso por ventana</th></tr>
+          <tr><td>Pro</td><td class="num">USD&nbsp;20</td><td>la base</td></tr>
+          <tr><td>Max</td><td class="num">USD&nbsp;100 · USD&nbsp;200</td><td>5× · 20× el de Pro</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="frase">Claude: rápido y completo, con tope de uso. Nuestro grafo: más trabajo, con control y costo predecible.</p>
+  <p class="nota">Precios y límites a octubre de 2026 (anthropic.com/pricing). Anthropic no publica una cantidad fija de mensajes por ventana.</p>
+  <aside class="notes">
+    No es Claude contra nuestro agente: son dos usos. Claude trae resuelto lo difícil —razonar, ejecutar código,
+    producir archivos— y con MCP y skills aprende nuestros datos y nuestro negocio; eso acorta el desarrollo a
+    semanas. El costo es el uso: cada plan tiene una ventana de 5 horas y un tope semanal, y el plan Pro se agota
+    rápido en investigaciones largas. Nuestro grafo cuesta más de construir, pero controlamos cada paso, cada
+    chequeo y el costo por pregunta. Verificar los precios el día de la charla.
+  </aside>
+</section>
+
+<!-- ================================================================== VERSIÓN 2 · QUÉ HACE CADA NODO -->
+<section class="nodos-grafo">
+  <div class="cabecera"><span class="chip resumen">Opción B · Construirlo nosotros</span><span class="donde"><code>backend/agente/nodos.py</code> · qué hace cada nodo del grafo</span></div>
+  <h2>Opción B: un equipo de agentes y sus piezas</h2>
+  <p class="pregunta-top"><b>Supongamos esta pregunta:</b> ¿Cómo cambió el costo promedio por reclamo hospitalario entre 2008 y 2009?</p>
+  <div class="estados">
+    <div class="est e-1"><h4>1 · Entender <span class="nod">comprender + revisar</span></h4>
+      <ul class="lineas">
+        <li><i>Qué:</i> costo promedio por reclamo</li>
+        <li><i>Cómo:</i> monto pagado ÷ reclamos</li>
+        <li><i>Dónde:</i> hospitalario, 2008 y 2009</li>
+      </ul></div>
+    <div class="est e-2"><h4>2 · Traer y calcular <span class="nod">construir + extraer + componer</span></h4>
+      <ul class="lineas">
+        <li><i>2008:</i> <b>USD 258,1 M</b> en 27.656 reclamos</li>
+        <li><i>2009:</i> <b>USD 245,5 M</b> en 25.210 reclamos</li>
+        <li><i>Sandbox:</i> <b>9.331,21 → 9.738,71</b></li>
+      </ul></div>
+    <div class="est e-3"><h4>3 · Verificar y enriquecer <span class="nod">revisar_resultado + leer + explicar</span></h4>
+      <ul class="lineas">
+        <li><i>Revisa:</i> costo por reclamo <b>+4,4&nbsp;%</b> ✓</li>
+        <li><i>Contexto:</i> reclamos <b>−8,8&nbsp;%</b>, pagado <b>−4,9&nbsp;%</b></li>
+        <li><i>Explica:</i> lo pagado bajó menos que los reclamos</li>
+      </ul></div>
+    <div class="est e-4"><h4>4 · Comunicar <span class="nod">redactar</span></h4>
+      <div class="val resp">El costo por reclamo <b>subió 4,4&nbsp;%</b>: pasó de <b>9.331,21</b> a <b>9.738,71</b> dólares.
+        Es importante mencionar que esto sucede aun cuando los reclamos cayeron <b>8,8&nbsp;%</b> (de 27.656 a 25.210),
+        pero lo pagado solo se redujo <b>4,9&nbsp;%</b> (de USD&nbsp;258,1&nbsp;M a 245,5&nbsp;M).
+        <span class="insight">Lo que nos muestra: hay menos reclamos, pero cada uno nos cuesta más.</span></div></div>
+  </div>
+  <div class="lienzo">
+      <svg class="grafo-explicado-svg" viewBox="0 0 1226 460" role="img" aria-label="Grafo del agente con la función de cada nodo">
+        <defs><marker id="flecha3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a96a8"/></marker></defs>
+        <path d="M222,96 H253" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M471,96 H502" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <path d="M720,96 H751" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <path d="M969,96 H1000" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M613,44 C613,8 364,8 364,40" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <text x="488" y="38" text-anchor="middle" font-family="Inter" font-size="12.5" font-style="italic" fill="#5d6b7e">error → rehacer</text>
+        <path d="M344,148 V192" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <path d="M384,196 V152" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <text x="336" y="176" text-anchor="end" font-family="Inter" font-size="12.5" font-style="italic" fill="#5d6b7e">dudas</text>
+        <path d="M1111,148 V192" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M1004,236 H973" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <path d="M969,268 H1000" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <text x="986" y="218" text-anchor="middle" font-family="Inter" font-size="12.5" font-style="italic" fill="#5d6b7e">falla</text>
+        <path d="M1111,300 V344" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <path d="M1004,400 H973" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M755,400 H724" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M506,400 H475" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M257,400 H226" fill="none" stroke="#8a96a8" stroke-width="2" marker-end="url(#flecha3)"/>
+        <path d="M253,112 H240 V384 H253" fill="none" stroke="#8a96a8" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#flecha3)"/>
+        <text x="232" y="244" text-anchor="end" font-family="Inter" font-size="12.5" font-style="italic" fill="#5d6b7e">saludo o</text>
+        <text x="232" y="260" text-anchor="end" font-family="Inter" font-size="12.5" font-style="italic" fill="#5d6b7e">conversación</text>
+        <g><rect x="8" y="66" width="214" height="60" rx="30" fill="#2f5d8a"/><text x="115.0" y="102" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#fff">Pregunta</text></g>
+        <g><rect x="257" y="44" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="271" y="72" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">comprender</text>
+        <rect x="271" y="82" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="324.5" y="95" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo · prompt</text>
+        <text x="271" y="119" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Arma el plan completo</text>
+        <text x="271" y="137" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ una sola decisión, auditable</text>
+        </g>
+        <g><rect x="506" y="44" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="520" y="72" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">revisar</text>
+        <rect x="520" y="82" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="573.5" y="95" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">código + modelo</text>
+        <text x="520" y="119" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Revisa el plan</text>
+        <text x="520" y="137" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ frena errores antes de gastar</text>
+        </g>
+        <g><rect x="755" y="44" width="214" height="104" rx="12" fill="#ebf3ee" stroke="#3d7d5e" stroke-width="2"/>
+        <text x="769" y="72" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">construir</text>
+        <rect x="769" y="82" width="52" height="18" rx="9" fill="#3d7d5e"/>
+        <text x="795.0" y="95" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">código</text>
+        <text x="769" y="119" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Convierte el plan en SQL</text>
+        <text x="769" y="137" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ el SQL nunca sale mal escrito</text>
+        </g>
+        <g><rect x="1004" y="44" width="214" height="104" rx="12" fill="#ebf3ee" stroke="#3d7d5e" stroke-width="2"/>
+        <text x="1018" y="72" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">extraer</text>
+        <rect x="1018" y="82" width="52" height="18" rx="9" fill="#3d7d5e"/>
+        <text x="1044.0" y="95" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">código</text>
+        <text x="1018" y="119" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Ejecuta el SQL</text>
+        <text x="1018" y="137" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ solo lectura, sin riesgo</text>
+        </g>
+        <g><rect x="257" y="196" width="214" height="104" rx="12" fill="#ebf3ee" stroke="#3d7d5e" stroke-width="2"/>
+        <text x="271" y="224" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">sondear</text>
+        <rect x="271" y="234" width="52" height="18" rx="9" fill="#3d7d5e"/>
+        <text x="297.0" y="247" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">código</text>
+        <text x="271" y="271" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Mira la base si hay dudas</text>
+        <text x="271" y="289" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ no adivina valores</text>
+        </g>
+        <g><rect x="755" y="196" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="769" y="224" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">reparar</text>
+        <rect x="769" y="234" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="822.5" y="247" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo · prompt</text>
+        <text x="769" y="271" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Corrige un cálculo fallido</text>
+        <text x="769" y="289" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ un error no frena todo</text>
+        </g>
+        <g><rect x="1004" y="196" width="214" height="104" rx="12" fill="#f7f0e5" stroke="#b9802f" stroke-width="2"/>
+        <text x="1018" y="224" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">componer</text>
+        <rect x="1018" y="234" width="58" height="18" rx="9" fill="#b9802f"/>
+        <text x="1047.0" y="247" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">sandbox</text>
+        <text x="1018" y="271" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Calcula la respuesta</text>
+        <text x="1018" y="289" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ cifras exactas, no estimadas</text>
+        </g>
+        <g><rect x="8" y="370" width="214" height="60" rx="30" fill="#1e2a3b"/><text x="115.0" y="406" text-anchor="middle" font-family="Inter" font-size="18" font-weight="700" fill="#fff">Respuesta</text></g>
+        <g><rect x="257" y="348" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="271" y="376" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">redactar</text>
+        <rect x="271" y="386" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="324.5" y="399" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo · prompt</text>
+        <text x="271" y="423" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Escribe la respuesta</text>
+        <text x="271" y="441" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ lenguaje de negocio, sin jerga</text>
+        </g>
+        <g><rect x="506" y="348" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="520" y="376" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">explicar</text>
+        <rect x="520" y="386" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="573.5" y="399" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo · prompt</text>
+        <text x="520" y="423" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Explica de dónde sale</text>
+        <text x="520" y="441" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ se confía en el número</text>
+        </g>
+        <g><rect x="755" y="348" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="769" y="376" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">leer</text>
+        <rect x="769" y="386" width="113" height="18" rx="9" fill="#b9802f"/>
+        <text x="825.5" y="399" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo + sandbox</text>
+        <text x="769" y="423" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Busca el contexto</text>
+        <text x="769" y="441" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ enriquece la respuesta</text>
+        </g>
+        <g><rect x="1004" y="348" width="214" height="104" rx="12" fill="#eeeff8" stroke="#5a5fa8" stroke-width="2"/>
+        <text x="1018" y="376" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#1e2a3b">revisar_resultado</text>
+        <rect x="1018" y="386" width="107" height="18" rx="9" fill="#5a5fa8"/>
+        <text x="1071.5" y="399" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">modelo · prompt</text>
+        <text x="1018" y="423" font-family="Inter" font-size="13.5" font-weight="600" fill="#1e2a3b">Revisa el resultado</text>
+        <text x="1018" y="441" font-family="Inter" font-size="12.5" font-weight="600" fill="#2f7d55">✓ detecta vacíos e imposibles</text>
+        </g>
+      </svg>
+  <div class="leyenda-ng">
+    <span><i class="m"></i>modelo: llama al LLM con su prompt</span>
+    <span><i class="c"></i>código: ejecuta lo que decidió el modelo</span>
+    <span><i class="s"></i>sandbox: corre el cálculo del modelo</span>
+    <span><i class="p"></i>camino que se elige en cada pregunta</span>
+  </div>
+  </div>
+  <aside class="notes">
+    Empezar por la pregunta: supongamos que estamos atacando esta. El razonamiento tiene cuatro estados.
+    1) Entender: comprender arma el plan (qué medida, qué filtro, qué años) y revisar lo valida antes de gastar.
+    2) Traer y calcular: construir traduce el plan a SQL, extraer lo ejecuta en solo lectura y componer calcula
+    en el sandbox: 9.331,21 a 9.738,71 dólares por reclamo. 3) Verificar y enriquecer: revisar_resultado busca
+    vacíos e imposibles, leer agrega contexto (+4,4 %, +407,50, 8,8 % menos reclamos) y explicar dice de dónde
+    sale el número. 4) Comunicar: redactar lo dice en lenguaje de negocio. Después, bajar al grafo: siete nodos
+    llaman al modelo, tres son código y uno es el sandbox; el modelo nunca escribe SQL.
+  </aside>
+</section>
+
+<!-- ================================================================== RAZONAR Y CALCULAR POR SEPARADO -->
+<section class="razon-sandbox">
+  <div class="cabecera"><span class="chip e4">Razonar y calcular</span><span class="donde">Un caso real del agente, tal como quedó en el panel de razonamiento</span></div>
+  <h2>El modelo razona; el sandbox calcula</h2>
+  <div class="cuatro-sb">
+    <div class="sb c1"><h3>Para qué sirve</h3><ul>
+      <li>Ejecuta el Python que escribe el modelo.</li>
+      <li>Calcula sobre los datos ya consultados.</li>
+      <li>Es la herramienta de ejecución de código de Claude, hecha en casa.</li>
+    </ul></div>
+    <div class="sb c2"><h3>En qué ayuda</h3><ul>
+      <li>La cifra no se estima: <b>se calcula</b>.</li>
+      <li>Da el mismo resultado en cada corrida.</li>
+      <li>Cada número se puede auditar: el código queda a la vista.</li>
+    </ul></div>
+    <div class="sb c3"><h3>Cómo usarlo</h3><ul>
+      <li>Solo las librerías necesarias: <code>pandas</code>, <code>numpy</code>, <code>pyarrow</code>.</li>
+      <li>Sin red, sin disco, sin credenciales; 30 s y 512 MB.</li>
+      <li>Crecer de a poco: machine learning, proyecciones.</li>
+    </ul></div>
+    <div class="sb c4"><h3>Riesgos</h3><ul>
+      <li><b>Prompt injection</b>: código malicioso que intente salir; aquí no tiene red.</li>
+      <li>Cada librería nueva es superficie nueva.</li>
+      <li>Un cálculo puede fallar: <code>reparar</code> lo corrige.</li>
+    </ul></div>
+  </div>
+  <p class="pregunta-caso"><b>Pregunta:</b> ¿Cómo cambió el costo promedio por reclamo hospitalario entre 2008 y 2009?</p>
+  <div class="lado">
+    <div class="caja razona"><h3>1 · El razonamiento</h3>
+      <dl>
+        <dt>Período</dt><dd>2008 frente a 2009</dd>
+        <dt>Métrica</dt><dd>Costo promedio por reclamo hospitalario (monto pagado por la aseguradora)</dd>
+        <dt>Extracción</dt><dd>Una consulta, que arma el código:</dd>
+      </dl>
+      <pre><code class="language-sql" data-trim>
+SELECT "anio", SUM("monto_pagado") AS "monto_pagado_total",
+       COUNT(*) AS "reclamos"
+FROM sabana WHERE "ambito" = 'Hospitalario'
+GROUP BY "anio" ORDER BY "anio"
+      </code></pre>
+    </div>
+    <div class="caja calcula"><h3>2 · El cálculo en el sandbox</h3>
+      <pre><code class="language-python" data-trim>
+df = consultas['promedio_hospitalario_anio']
+df['costo_promedio'] = df['monto_pagado_total'] * 1.0 / df['reclamos']
+df = df[['anio', 'costo_promedio', 'reclamos']]
+resultado = df
+      </code></pre>
+      <table>
+        <tr><th>Año</th><th>Costo promedio</th><th>Reclamos</th></tr>
+        <tr><td>2008</td><td class="num">9&nbsp;331,21</td><td class="num">27&nbsp;656</td></tr>
+        <tr><td>2009</td><td class="num">9&nbsp;738,71</td><td class="num">25&nbsp;210</td></tr>
+      </table>
+      <div class="encierro"><span>sin red</span><span>sin disco</span><span>sin credenciales</span><span>30 s y 512 MB como tope</span></div>
+    </div>
+  </div>
+  <p class="frase">Respuesta: subió de USD 9&nbsp;331,21 a USD 9&nbsp;738,71 (+4,4 %). Cada cifra salió de una ejecución.</p>
+  <aside class="notes">
+    Pregunta real hecha al agente; las cifras coinciden con el diccionario (9 331,21 y 9 738,71). Izquierda: lo
+    que decidió el modelo, que el panel de razonamiento muestra a quien quiera auditarlo. Derecha: el Python que
+    escribió el modelo, ejecutado en un contenedor descartable. La misma caja puede crecer: sumando librerías a
+    la imagen, el sandbox puede producir gráficos o tableros HTML más pesados sin tocar el servidor.
+      Las cuatro cajas: sirve para ejecutar el cálculo que escribe el modelo; ayuda porque la cifra es exacta,
+    repetible y auditable; se usa cerrado (sin red, sin disco, sin credenciales, con topes) y creciendo de a
+    poco; el riesgo principal es la prompt injection, y sin salida a internet ese código no llega a la empresa.
+  </aside>
+</section>
+
+<!-- ================================================================== EL FRONT -->
+<section class="front">
+  <div class="cabecera"><span class="chip resumen">El front</span><span class="donde"><code>frontend/</code> · React + Vite + TypeScript + Tailwind</span></div>
+  <h2>El front: qué hace cada herramienta y cómo se juntan</h2>
+  <div class="cuatro-h">
+    <div class="herr html"><div class="cab-h"><img src="img/html5.svg" alt=""><b>HTML</b></div>
+      <p class="es">La estructura: qué hay en la pantalla.</p>
+      <p class="aqui">En nuestro front: la barra de <b>conversaciones</b>, el chat y la caja para escribir.</p></div>
+    <div class="herr css"><div class="cab-h"><img src="img/css3.svg" alt=""><b>CSS</b></div>
+      <p class="es">El estilo: cómo se ve.</p>
+      <p class="aqui">Colores, espacios y tipografía; con Tailwind se escribe en <b>clases cortas</b>.</p></div>
+    <div class="herr js"><div class="cab-h"><img src="img/javascript.svg" alt=""><b>JavaScript</b></div>
+      <p class="es">El comportamiento: qué pasa al hacer clic.</p>
+      <p class="aqui">Enviar la pregunta, <b>llamar a la API</b>, borrar un chat, abrir el razonamiento.</p></div>
+    <div class="herr react"><div class="cab-h"><img src="img/react.svg" alt=""><b>React</b></div>
+      <p class="es">Junta los tres en componentes reutilizables.</p>
+      <p class="aqui">El <b>panel de razonamiento</b>, el <b>medidor de costo</b> y la tabla de resultados son componentes.</p></div>
+  </div>
+  <h3 class="junta">Cómo se juntan, en cada pregunta</h3>
+  <div class="recorrido">
+    <div class="p nav"><b>Navegador</b>React arma la pantalla con HTML, CSS y JavaScript
+      <div class="mini"><img src="img/react.svg" alt=""><img src="img/html5.svg" alt=""><img src="img/css3.svg" alt=""><img src="img/javascript.svg" alt=""></div></div>
+    <div class="fl">⇄</div>
+    <div class="p api"><b>API · FastAPI</b>recibe la pregunta y devuelve respuesta, razonamiento y costo</div>
+    <div class="fl">⇄</div>
+    <div class="p ag"><b>Agente · LangGraph</b>el grafo de la lámina anterior, en Python</div>
+    <div class="fl">⇄</div>
+    <div class="p datos"><b>Base y sandbox</b>SQLite en solo lectura y el contenedor de cálculo</div>
+  </div>
+  <p class="frase">El back piensa; el front es lo que ve el negocio: sin él, nadie lo usa.</p>
+  <aside class="notes">
+    HTML dice qué hay en la pantalla, CSS cómo se ve y JavaScript qué pasa al interactuar. React los junta en
+    componentes que se reutilizan: el panel de razonamiento, el medidor de costo, la tabla, la barra de
+    conversaciones. TypeScript es JavaScript con tipos (atrapa errores antes de abrir la página) y Tailwind es CSS
+    en clases cortas. En cada pregunta: el navegador llama a la API (FastAPI), la API corre el agente (LangGraph),
+    el agente consulta la base y calcula en el sandbox, y todo vuelve al navegador con el razonamiento y el costo.
+  </aside>
+</section>
+
+<!-- ================================================================== EL FRONT, SEÑALADO -->
+<section class="front-real">
+  <div class="cabecera"><span class="chip resumen">El front</span><span class="donde">El producto funcionando · qué herramienta hace cada parte</span></div>
+  <h2>Nuestro front, parte por parte</h2>
+  <div class="cuerpo">
+    <div class="captura">
+      <img src="img/front_agente.png" alt="Captura del front del agente: conversaciones, costo, razonamiento, respuesta, tabla y caja de pregunta">
+      <span class="marca" style="left:17.2%;top:7.8%">1</span>
+      <span class="marca" style="left:67.2%;top:2.9%">2</span>
+      <span class="marca" style="left:29.6%;top:15.8%">3</span>
+      <span class="marca" style="left:29.6%;top:22.5%">4</span>
+      <span class="marca" style="left:29.6%;top:39.7%">5</span>
+      <span class="marca" style="left:29.6%;top:47.5%">6</span>
+      <span class="marca" style="left:29.6%;top:92.2%">7</span>
+    </div>
+    <div>
+      <ol class="secciones">
+        <li><span class="n">1</span><div class="sec"><b>Conversaciones</b><span class="t react">React</span><span class="t js">JS</span><br>la lista del historial; abrir o borrar un chat.</div></li>
+        <li><span class="n">2</span><div class="sec"><b>Medidor de costo</b><span class="t react">React</span><span class="t js">JS</span><br>cuánto costó la conversación; lo pide a la API.</div></li>
+        <li><span class="n">3</span><div class="sec"><b>Razonamiento</b><span class="t react">React</span><span class="t js">JS</span><br>se abre al clic: el SQL, los filtros y el cálculo.</div></li>
+        <li><span class="n">4</span><div class="sec"><b>Respuesta</b><span class="t html">HTML</span><br>llega como HTML desde el agente y se limpia antes de mostrarse.</div></li>
+        <li><span class="n">5</span><div class="sec"><b>Para profundizar</b><span class="t js">JS</span><br>al tocar una sugerencia, se envía como pregunta nueva.</div></li>
+        <li><span class="n">6</span><div class="sec"><b>Tabla de resultados</b><span class="t react">React</span><br>un componente que formatea las cifras.</div></li>
+        <li><span class="n">7</span><div class="sec"><b>Caja de pregunta</b><span class="t html">HTML</span><span class="t js">JS</span><br>el campo de texto y el envío a <code>/api/chat</code>.</div></li>
+      </ol>
+      <div class="estilo-todo">Y todo lo que se ve —colores, espacios, tipografía— es <span class="t css">CSS</span> escrito con Tailwind.</div>
+    </div>
+  </div>
+  <p class="frase">HTML pone las piezas, CSS las viste, JavaScript las mueve y React las organiza.</p>
+  <aside class="notes">
+    Captura real del front con una pregunta respondida por el agente sobre la base pública. Recorrer los números:
+    las conversaciones guardadas (con el botón para borrar), el medidor de costo, el razonamiento que se abre al
+    clic, la respuesta, las sugerencias que se envían como pregunta nueva, la tabla y la caja de pregunta. Cada
+    parte es un componente de React; lo que pasa al hacer clic es JavaScript; la estructura es HTML; y el aspecto,
+    CSS con Tailwind.
+  </aside>
+</section>
+
+<!-- ================================================================== CIERRE -->
+<section class="portada cierre cierre-final" data-background-gradient="linear-gradient(135deg, #0f1e33 0%, #1c3557 100%)">
+  <h1>Del agente al producto: lo que hace falta</h1>
+  <div class="falta-dos">
+    <div class="falta-lado tec"><h3>Parte técnica</h3>
+      <div class="valor-grid">
+        <div class="valor-card"><h4>Estudio</h4>
+          <p>Lo básico de HTML, CSS, JavaScript y React: lo suficiente para leer y entender lo que se construye.</p></div>
+        <div class="valor-card"><h4>Análisis</h4>
+          <p>Entender cómo viaja una pregunta: del front a la API, de la API al agente y de vuelta.</p></div>
+        <div class="valor-card"><h4>Investigación</h4>
+          <p>Probar, medir y comparar: Claude o construirlo nosotros, con costos y resultados reales.</p></div>
+        <div class="valor-card"><h4>Tiempo de aprendizaje</h4>
+          <p>Semanas de práctica hasta que conectar el front con el back se vuelva natural.</p></div>
+      </div>
+    </div>
+    <div class="falta-lado neg"><h3>Parte de negocio: medir el retorno</h3>
+      <div class="valor-grid">
+        <div class="valor-card"><h4>Horas ahorradas</h4>
+          <p>Cuánto tiempo de análisis deja de hacerse a mano, frente a lo que cuesta operar el agente.</p></div>
+        <div class="valor-card"><h4>Análisis realizados</h4>
+          <p>Cuántas preguntas se responden al mes, y cuántas antes no se alcanzaban a responder.</p></div>
+        <div class="valor-card"><h4>Hallazgos monetarios</h4>
+          <p>Cuánto dinero señalan los hallazgos: costos que suben, fugas, oportunidades.</p></div>
+        <div class="valor-card"><h4>Estrategias derivadas</h4>
+          <p>Cuántas decisiones o estrategias nacen de un análisis del agente.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="vibe-final">La brecha la cierra el <b>vibe coding</b>: describimos lo que necesitamos, la IA escribe el código, y
+    nosotros lo entendemos, lo revisamos y lo conectamos. Así llegamos a un <b>front utilizable en el día a día</b>,
+    con historial, costos y el razonamiento a la vista.</div>
+  <p class="gracias">Gracias · ¿Preguntas?</p>
+  <aside class="notes">
+    El mensaje de cierre: nada de esto sale solo. Hace falta estudiar lo básico del front, analizar cómo se conectan
+    las piezas, investigar qué camino conviene y darse tiempo para aprender. Pero la brecha que más nos frenaba como
+    científicos de datos e ingenieros de IA —construir una interfaz— hoy se cierra con vibe coding: la IA escribe el
+    código y nosotros ponemos el criterio para entenderlo, revisarlo y conectarlo. Abrir preguntas.
+    Dos frentes. Técnico: estudiar, analizar, investigar y darse tiempo. Negocio: medir el retorno para saber qué tan
+    potente se vuelve esto para la estrategia de la empresa: horas de análisis ahorradas, cantidad de análisis,
+    hallazgos con valor en dinero y estrategias que salen de esos análisis.
+  </aside>
+</section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true, slideNumber: "c/t",
+    width: 1280, height: 760, margin: 0.05,
+    transition: "fade",
+    plugins: [RevealNotes, RevealHighlight],   // S = notas del orador
+  });
+</script>
+</body>
+</html>

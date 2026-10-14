@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+langchain
+langgraph
+langchain-openai
+python-dotenv
+
+# Seguimiento (backend/trazas.py). Viene con langchain, pero lo importamos
+# por nombre para refrescarle la caché de configuración, así que se declara.
+langsmith
+
+# Acceso a la base pública (backend/datos_basePublica/ejecucion.py, sqlite3 de
+# la biblioteca estándar) y armado de resultados.
+pandas
+deepagents

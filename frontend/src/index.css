@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-acento: #c96442;
+}
+
+/* El HTML que redacta el agente. Tailwind resetea los márgenes de p/ul/li, así
+   que sin esto los párrafos y las listas quedan todos pegados. Las etiquetas
+   permitidas están en backend/formato.py. */
+.respuesta > * + * {
+  margin-top: 0.75rem;
+}
+.respuesta ul,
+.respuesta ol {
+  padding-left: 1.25rem;
+  list-style-position: outside;
+}
+.respuesta ul {
+  list-style-type: disc;
+}
+.respuesta ol {
+  list-style-type: decimal;
+}
+.respuesta li + li {
+  margin-top: 0.25rem;
+}
+.respuesta h4 {
+  font-weight: 600;
+}
+.respuesta strong,
+.respuesta b {
+  font-weight: 600;
+}
+.respuesta code {
+  border-radius: 0.25rem;
+  background: #f3f4f6;
+  padding: 0.05rem 0.3rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}

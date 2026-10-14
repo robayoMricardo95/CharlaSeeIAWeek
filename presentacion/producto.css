@@ -1,0 +1,570 @@
+/* Del agente al producto · lo que se suma a estilos.css (copiado tal cual de
+   "Python que piensa"). Aquí solo van piezas nuevas; la paleta es la misma. */
+
+/* Chip neutro para las láminas que no son de una etapa (recapitulación). */
+.chip.resumen { background: var(--acento); }
+
+/* Lo que dejó cada etapa: el resultado medido, abajo de todo. */
+.logro {
+  margin-top: 10px; padding: 8px 10px; border-radius: 10px;
+  background: #f1f4f8; font-size: 0.92em; line-height: 1.3; color: var(--tinta);
+}
+.logro b { color: var(--acento); }
+
+
+/* ------------------------------------------------------------- portada: logos blancos un poco más chicos */
+.portada .logos.cuatro img { height: 54px; }
+
+/* ------------------------------------------------------------- arquitectura: el grafo y sus herramientas */
+.arq { display: grid; grid-template-columns: 1fr 300px; gap: 22px; align-items: start; }
+.arq svg { width: 100%; height: auto; display: block; background: var(--caja);
+           border: 1px solid var(--linea); border-radius: 14px; }
+.arq .leyenda { display: flex; gap: 18px; font-size: 0.42em; color: var(--suave); margin-top: 8px; flex-wrap: wrap; }
+.arq .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.arq .leyenda i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 2px solid; }
+.arq .leyenda i.modelo { background: #eeeff8; border-color: var(--e3); }
+.arq .leyenda i.codigo { background: #ebf3ee; border-color: var(--e2); }
+.arq .leyenda i.sandbox { background: #f7f0e5; border-color: var(--e4); }
+.arq .leyenda i.punteada { width: 22px; height: 0; border-radius: 0; border-width: 2px 0 0; border-style: dashed; border-color: var(--suave); }
+.herramientas { display: flex; flex-direction: column; gap: 9px; }
+.herramienta { background: var(--caja); border: 1px solid var(--linea); border-left: 6px solid var(--acento);
+               border-radius: 12px; padding: 8px 12px; font-size: 0.44em; line-height: 1.3; }
+.herramienta b { display: block; font-size: 1.12em; color: var(--tinta); }
+.herramienta code { font-size: 0.92em; color: var(--suave); }
+.herramienta.h-dicc { border-left-color: var(--e2); }
+.herramienta.h-sql { border-left-color: var(--e1); }
+.herramienta.h-sandbox { border-left-color: var(--e4); }
+.herramienta.h-chequeo { border-left-color: var(--e3); }
+.herramienta.h-memoria { border-left-color: var(--acento); }
+.reveal .arquitectura .frase { font-size: 0.85em; margin-top: 0.45em; }
+
+/* El SVG del grafo: nodos por tipo y aristas. */
+.g-nodo rect { stroke-width: 2; rx: 10; }
+.g-nodo.modelo rect { fill: #eeeff8; stroke: var(--e3); }
+.g-nodo.codigo rect { fill: #ebf3ee; stroke: var(--e2); }
+.g-nodo.sandbox rect { fill: #f7f0e5; stroke: var(--e4); }
+.g-nodo.extremo rect { fill: var(--tinta); stroke: var(--tinta); rx: 26; }
+.g-nodo text { font-family: "Inter", sans-serif; text-anchor: middle; }
+.g-nodo .nombre { font-family: "JetBrains Mono", monospace; font-size: 14px; font-weight: 600; fill: var(--tinta); }
+.g-nodo .rol { font-size: 11px; fill: var(--suave); }
+.g-nodo.extremo .nombre { fill: #fff; font-family: "Inter", sans-serif; font-weight: 700; }
+.g-arista { fill: none; stroke: #8a96a8; stroke-width: 1.8; }
+.g-arista.cond { stroke-dasharray: 5 4; }
+.g-etiqueta { font-family: "Inter", sans-serif; font-size: 11px; fill: var(--suave); font-style: italic; }
+
+/* ------------------------------------------------------------- las cinco piezas */
+.reveal .ruta.cinco { grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.ruta.cinco .etapa { padding: 14px; font-size: 0.5em; display: flex; flex-direction: column; }
+.ruta.cinco .etapa p { margin: 0 0 0.4em; flex: 1; }
+.ruta.cinco .etapa .logro { font-size: 0.95em; }
+.etapa.p1 { border-top-color: var(--e2); }
+.etapa.p2 { border-top-color: var(--e1); }
+.etapa.p3 { border-top-color: var(--e3); }
+.etapa.p4 { border-top-color: var(--e4); }
+.etapa.p5 { border-top-color: var(--acento); }
+.etapa.p1 .logro { background: #ebf3ee; }
+.etapa.p2 .logro { background: #eaf3f5; }
+.etapa.p3 .logro { background: #eeeff8; }
+.etapa.p4 .logro { background: #f7f0e5; }
+.etapa.p5 .logro { background: #eef2f7; }
+
+/* ------------------------------------------------------------- razonamiento y sandbox, lado a lado */
+.pregunta-caso { font-size: 0.62em; padding: 10px 16px; border-radius: 12px; background: var(--noche); color: #fff; margin: 0 0 12px; }
+.pregunta-caso b { color: #ffd166; }
+.lado { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lado .caja { font-size: 0.56em; padding: 12px 16px; }
+.lado .caja h3 { font-size: 1.1em; color: var(--tinta); margin-bottom: 0.3em; }
+.lado .caja.razona { border-top: 6px solid var(--e3); }
+.lado .caja.calcula { border-top: 6px solid var(--e4); }
+.lado .caja dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; }
+.lado .caja dt { font-weight: 700; color: var(--suave); }
+.lado .caja dd { margin: 0; }
+.reveal .lado pre { font-size: 0.82em; margin: 0.4em 0; }
+.reveal .lado pre code { padding: 10px 12px; max-height: none; }
+.reveal .lado table { font-size: 0.95em; margin: 0.3em 0 0; }
+.reveal .lado table td, .reveal .lado table th { padding: 4px 10px; }
+.encierro { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.encierro span { font-size: 0.85em; padding: 2px 10px; border-radius: 999px; background: #f7f0e5; color: #7a531c; font-weight: 600; }
+.reveal .razon-sandbox .frase { font-size: 0.8em; margin-top: 0.45em; }
+
+/* ------------------------------------------------------------- versión 1 frente a Claude */
+.v1-claude .dos { gap: 20px; align-items: stretch; }
+.v1-claude .caja { font-size: 0.56em; padding: 12px 16px; }
+.v1-claude .caja h3 { font-size: 1.12em; color: var(--tinta); margin-bottom: 0.25em; }
+.v1-claude .caja.v1 { border-top: 6px solid var(--e3); }
+.v1-claude .caja.claude { border-top: 6px solid #c96442; }
+.v1-arriba { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center; }
+.v1-arriba img { width: 100%; margin: 0; background: #fff; border: 1px solid var(--linea); border-radius: 10px; padding: 4px; }
+.v1-arriba p { margin: 0 0 0.35em; }
+.reveal .v1-claude table { font-size: 0.92em; margin: 0.5em 0 0.2em; }
+.reveal .v1-claude table td, .reveal .v1-claude table th { padding: 3px 8px; }
+.v1-claude svg { width: 100%; height: auto; display: block; margin: 2px 0 4px; }
+.v1-claude .caja ul { margin: 0.2em 0 0 1.1em; }
+.v1-claude .caja li + li { margin-top: 0.2em; }
+.g-nodo.llm rect { fill: #fbeee8; stroke: #c96442; }
+.g-nodo.skills rect { fill: #eef2f7; stroke: var(--acento); }
+.reveal .v1-claude .frase { font-size: 0.8em; margin-top: 0.45em; }
+
+/* ------------------------------------------------------------- portada: la fila del front */
+.portada .logos.front { margin-top: -0.1em; gap: 26px; }
+.portada .logos.front img { height: 42px; }
+.portada .logos.front span { color: #93a7c4; font-size: 0.45em; font-weight: 600; }
+
+/* ------------------------------------------------------------- versión 1, con el grafo grande */
+.v1-grande { display: grid; grid-template-columns: 250px 1fr; gap: 16px; align-items: start; }
+.v1-grande img { width: 100%; margin: 0; background: #fff; border: 1px solid var(--linea); border-radius: 10px; padding: 6px; }
+.v1-grande ol { margin: 0.2em 0 0.4em 1.2em; }
+.v1-grande li + li { margin-top: 0.15em; }
+.v1-grande p { margin: 0 0 0.35em; }
+.limite { margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: #fbefee; border-left: 5px solid var(--mal); }
+.limite b { color: var(--mal); }
+
+/* ------------------------------------------------------------- Claude como plataforma */
+.chip.claude { background: #c96442; }
+.plataforma .tres { gap: 16px; }
+.plataforma .tres .caja { font-size: 0.5em; padding: 10px 14px; border-top: 5px solid #c96442; }
+.plataforma .tres .caja h3 { font-size: 1.2em; color: var(--tinta); margin-bottom: 0.2em; }
+.plataforma .tres .caja .caso { margin-top: 6px; padding: 5px 8px; border-radius: 8px; background: #fbeee8; }
+.plataforma .dos { margin-top: 14px; gap: 18px; }
+.plataforma .dos .caja { font-size: 0.52em; padding: 10px 16px; }
+.plataforma .dos .caja h3 { font-size: 1.15em; margin-bottom: 0.25em; }
+.plataforma .dos .caja.bien h3 { color: var(--bien); }
+.plataforma .dos .caja.mal h3 { color: var(--mal); }
+.plataforma .dos ul { margin: 0 0 0 1.1em; }
+.plataforma .dos li + li { margin-top: 0.25em; }
+.reveal .plataforma table { font-size: 0.95em; margin: 0.35em 0 0; }
+.reveal .plataforma table td, .reveal .plataforma table th { padding: 3px 10px; }
+.reveal .plataforma .frase { font-size: 0.78em; margin-top: 0.4em; }
+.reveal .plataforma .nota { margin-top: 0.3em; font-size: 0.42em; }
+
+/* ------------------------------------------------------------- recapitulación fusionada: aprendimos / falta */
+.fusion .ruta { gap: 14px; margin-top: 0.2em; }
+.fusion .etapa { padding: 14px; font-size: 0.5em; display: flex; flex-direction: column; gap: 8px; }
+.fusion .etapa h4 { margin: 0.15em 0 0.1em; }
+.fusion .etapa .logos { margin-bottom: 0; }
+.bloque { border-radius: 10px; padding: 8px 10px; line-height: 1.35; }
+.bloque .rotulo { display: block; font-size: 0.82em; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 3px; }
+.bloque.aprendimos { background: #edf5f0; }
+.bloque.aprendimos .rotulo { color: var(--bien); }
+.bloque.falta { background: #fbf3e6; flex: 1; }
+.bloque.falta .rotulo { color: #9a6420; }
+.reveal .fusion .frase { font-size: 0.85em; margin-top: 0.5em; }
+.bloque.quees { background: #eef2f7; }
+.bloque.quees .rotulo { color: var(--acento); }
+.fusion .etapa { gap: 7px; }
+.fusion .bloque { padding: 7px 10px; }
+.bloque b { color: var(--tinta); }
+
+/* Las cuatro tarjetas comparten filas (subgrid): cada bloque —¿Qué es?, Aprendimos,
+   Falta— toma la altura del más alto de su fila, y quedan alineados entre columnas. */
+.fusion .ruta { grid-template-rows: repeat(6, auto); }
+.fusion .etapa { display: grid; grid-row: span 6; grid-template-rows: subgrid; row-gap: 7px; }
+.fusion .etapa .num, .fusion .etapa h4 { align-self: end; }
+.fusion .bloque.falta { flex: none; }
+
+/* ------------------------------------------------------------- versión 1 y dos caminos */
+.opciones { display: grid; grid-template-rows: auto auto; gap: 14px; }
+.opcion { font-size: 0.5em; padding: 10px 14px; background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; }
+.opcion.a { border-left: 7px solid #c96442; }
+.opcion.b { border-left: 7px solid var(--e3); }
+.opcion h3 { display: flex; align-items: center; gap: 10px; font-size: 1.2em; color: var(--tinta); margin: 0 0 0.3em; }
+.opcion h3 img { height: 1.2em; margin: 0; }
+.opcion p { margin: 0.25em 0; }
+.opcion .tiempos { display: flex; gap: 10px; margin: 0.4em 0; }
+.opcion .tiempo { flex: 1; background: #fbeee8; border-radius: 10px; padding: 6px 10px; }
+.opcion .tiempo b { display: block; font-size: 1.35em; color: #a24d2f; line-height: 1.15; }
+.opcion .requisitos { color: var(--suave); }
+.opcion .stack { display: flex; gap: 12px; align-items: center; margin: 0.35em 0; }
+.opcion .stack img { height: 26px; margin: 0; }
+.opcion .balanza { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.35em; }
+.opcion .balanza div { border-radius: 10px; padding: 6px 10px; }
+.opcion .balanza .pro { background: #edf5f0; }
+.opcion .balanza .contra { background: #fbefee; }
+.opcion .balanza b { display: block; font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.04em; }
+.opcion .balanza .pro b { color: var(--bien); }
+.opcion .balanza .contra b { color: var(--mal); }
+
+/* ------------------------------------------------------------- Claude como plataforma, con el diagrama */
+.plataforma .arriba { display: grid; grid-template-columns: 470px 1fr; gap: 16px; align-items: stretch; }
+.plataforma .arriba .diagrama { background: var(--caja); border: 1px solid var(--linea); border-top: 5px solid #c96442;
+                                border-radius: 14px; padding: 8px 12px; }
+.plataforma .arriba .diagrama h3 { font-size: 0.5em; color: var(--tinta); margin: 0 0 4px; }
+.plataforma .arriba svg { width: 100%; height: auto; display: block; }
+.plataforma .piezas { display: flex; flex-direction: column; gap: 8px; }
+.plataforma .piezas .caja { font-size: 0.46em; padding: 7px 12px; border-top: none; border-left: 5px solid #c96442; flex: 1; }
+.plataforma .piezas .caja h3 { font-size: 1.15em; color: var(--tinta); margin: 0 0 0.15em; }
+.plataforma .piezas .caja .caso { margin-top: 4px; padding: 3px 8px; border-radius: 8px; background: #fbeee8; display: inline-block; }
+.plataforma .dos { margin-top: 12px; }
+.plataforma .dos { margin-top: 10px; }
+.plataforma .dos .caja { font-size: 0.48em; padding: 8px 14px; }
+.plataforma .dos li + li { margin-top: 0.15em; }
+.reveal .plataforma .frase { font-size: 0.72em; margin-top: 0.35em; }
+.plataforma h2 { margin-bottom: 0.3em; }
+.opcion { font-size: 0.47em; padding: 9px 14px; }
+.opciones { gap: 12px; }
+.opcion .tiempos { margin: 0.3em 0; }
+.opcion .tiempo { padding: 5px 10px; }
+.opcion .stack { margin: 0.25em 0; }
+.opcion .stack img { height: 24px; }
+.opcion .vibe { margin-top: 0.4em; padding: 6px 10px; border-radius: 10px; background: #eeeff8; border-left: 5px solid var(--e3); }
+.opcion .vibe b { color: var(--e3); }
+
+/* Las dos opciones ocupan lo mismo: la columna derecha se reparte en dos mitades iguales. */
+.v1-claude .opciones { grid-template-rows: 1fr 1fr; height: 100%; }
+.opcion { display: flex; flex-direction: column; gap: 6px; }
+.opcion p, .opcion .tiempos, .opcion .balanza, .opcion .vibe { margin: 0; }
+.opcion .balanza { margin-top: auto; }
+
+/* Lámina 4: la franja de requisitos. */
+.plataforma .requisitos-claude { margin-top: 10px; padding: 7px 14px; border-radius: 12px; font-size: 0.46em;
+  background: #fbeee8; border-left: 6px solid #c96442; }
+.plataforma .requisitos-claude b { color: #a24d2f; }
+.plataforma .arriba { grid-template-columns: 420px 1fr; }
+.plataforma .piezas { gap: 6px; }
+.plataforma .piezas .caja { font-size: 0.43em; padding: 5px 12px; }
+.plataforma .requisitos-claude { margin-top: 8px; padding: 5px 14px; font-size: 0.44em; }
+.plataforma .dos { margin-top: 8px; }
+.plataforma .dos .caja { font-size: 0.46em; padding: 7px 14px; }
+.reveal .plataforma table td, .reveal .plataforma table th { padding: 2px 10px; }
+
+/* Versión 1: el grafo ocupa toda la altura de su fila; a la derecha, solo qué hace. */
+.v1-grande { grid-template-columns: auto 1fr; align-items: stretch; gap: 18px; }
+.v1-grande .grafo-v1 { display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 1px solid var(--linea); border-radius: 10px; padding: 6px; }
+.v1-grande .grafo-v1 img { height: 290px; width: auto; border: none; padding: 0; background: none; }
+.v1-grande .que-hace { display: flex; flex-direction: column; justify-content: center; }
+.limite { margin-top: 12px; }
+.limite p { margin: 0; }
+.limite p + p { margin-top: 6px; }
+
+/* Versión 1: los dos límites como tarjetas, no como párrafo. */
+.limites { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.limites .tarjeta { background: #fbefee; border-radius: 12px; padding: 8px 12px; font-size: 0.82em; line-height: 1.25; }
+.limites .etiqueta-l { font-size: 0.72em; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mal); }
+.limites .titulo-l { font-size: 1.05em; font-weight: 800; color: var(--tinta); margin: 1px 0 6px; }
+.limites .cifras-l { display: grid; grid-template-columns: auto 1fr; gap: 1px 8px; align-items: baseline; }
+.limites .cifras-l span { font-size: 0.78em; color: var(--suave); }
+.limites .cifras-l b { font-family: "JetBrains Mono", monospace; font-size: 1em; font-weight: 600; }
+.limites .cifras-l .mal-l { color: var(--mal); }
+.limites .cifras-l .bien-l { color: var(--bien); }
+.limites .pie-l { font-size: 0.78em; color: var(--suave); margin-top: 6px; }
+.limites .contraste { display: flex; flex-direction: column; gap: 6px; }
+.limites .contraste > div { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 8px; padding: 6px 10px; }
+.limites .contraste > div > div { font-weight: 700; color: var(--tinta); }
+.limites .contraste small { font-weight: 400; }
+.limites .contraste i { font-style: normal; font-weight: 800; font-size: 1.1em; width: 1em; text-align: center; }
+.limites .contraste .si i { color: var(--bien); }
+.limites .contraste .no i { color: var(--mal); }
+.limites .contraste small { display: block; font-size: 0.85em; color: var(--suave); }
+.limites .tarjeta { font-size: 0.92em; padding: 10px 14px; }
+.limites .cifras-l b { font-size: 1.08em; }
+.limites .contraste { gap: 8px; }
+
+/* ------------------------------------------------------------- lámina 4: diagrama grande | definiciones y limitaciones */
+.plat2 { display: grid; grid-template-columns: 1fr 1.12fr; gap: 18px; align-items: stretch; }
+.plat2 .diagrama { background: var(--caja); border: 1px solid var(--linea); border-top: 5px solid #c96442;
+  border-radius: 14px; padding: 10px 14px; display: flex; flex-direction: column; }
+.plat2 .diagrama h3 { font-size: 0.55em; color: var(--tinta); margin: 0 0 6px; }
+.plat2 .diagrama svg { width: 100%; height: auto; flex: 1; }
+.plat2 .derecha { display: flex; flex-direction: column; gap: 8px; }
+.plat2 .rotulo-seccion { font-size: 0.42em; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin: 2px 0 -2px; }
+.plat2 .rotulo-seccion.def { color: #a24d2f; }
+.plat2 .rotulo-seccion.lim { color: var(--mal); }
+.plat2 .defi { font-size: 0.44em; background: var(--caja); border: 1px solid var(--linea); border-left: 5px solid #c96442;
+  border-radius: 12px; padding: 6px 12px; line-height: 1.35; }
+.plat2 .defi b.n { display: block; font-size: 1.12em; color: var(--tinta); }
+.plat2 .defi .caso { display: inline-block; margin-top: 3px; padding: 2px 8px; border-radius: 8px; background: #fbeee8; }
+.plat2 .limit { font-size: 0.44em; background: var(--caja); border: 1px solid var(--linea); border-left: 5px solid var(--mal);
+  border-radius: 12px; padding: 7px 12px; line-height: 1.35; }
+.plat2 .limit ul { margin: 0.2em 0 0.3em 1.1em; }
+.plat2 .limit li + li { margin-top: 0.15em; }
+.plat2 .limit .req { padding: 4px 8px; border-radius: 8px; background: #fbefee; }
+.plat2 .limit .req b { color: var(--mal); }
+.reveal .plat2 table { font-size: 0.95em; margin: 0.2em 0 0; }
+.reveal .plat2 table td, .reveal .plat2 table th { padding: 2px 10px; }
+.g-nodo.pregunta rect { fill: var(--acento); stroke: var(--acento); rx: 24; }
+.g-nodo.pregunta .nombre { fill: #fff; font-family: "Inter", sans-serif; font-weight: 700; }
+.g-num circle { fill: #c96442; }
+.g-num text { fill: #fff; font-family: "Inter", sans-serif; font-size: 13px; font-weight: 800; text-anchor: middle; }
+.plat2 .rotulo-seccion.req-t { color: var(--acento); }
+.plat2 .reqs { font-size: 0.44em; background: var(--caja); border: 1px solid var(--linea); border-left: 5px solid var(--acento);
+  border-radius: 12px; padding: 6px 12px; line-height: 1.35; }
+.plat2 .reqs ul { margin: 0 0 0 1.1em; }
+.plat2 .reqs li + li { margin-top: 0.1em; }
+.plat2 .defi { padding: 5px 12px; }
+.plat2 .derecha { gap: 6px; }
+.plat2 .defi .caso { margin-top: 2px; margin-left: 4px; }
+.plat2 .defi b.n { display: inline; margin-right: 6px; }
+.plataforma h2 { margin-bottom: 0.25em; }
+
+/* ------------------------------------------------------------- versión 2: el grafo arriba, las piezas abajo */
+.v2 h2 { margin-bottom: 0.25em; }
+.v2 .arriba-v2 { display: grid; grid-template-columns: 760px 1fr; gap: 18px; align-items: center; }
+.v2 .arriba-v2 svg { width: 100%; height: auto; display: block; background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; }
+.v2 .lado-v2 { font-size: 0.5em; line-height: 1.4; }
+.v2 .lado-v2 .leyenda { display: flex; flex-direction: column; gap: 8px; font-size: 1em; margin: 0; }
+.v2 .lado-v2 .cuenta { margin-top: 12px; padding: 8px 12px; border-radius: 10px; background: #eef0f8; border-left: 5px solid var(--e3); }
+.v2 .lado-v2 .cuenta b { color: var(--e3); }
+.v2 .ruta.cinco { margin-top: 12px; gap: 12px; }
+.v2 .ruta.cinco .etapa { padding: 10px 12px; font-size: 0.44em; border-top-width: 6px; }
+.v2 .ruta.cinco .etapa .num { font-size: 1.6em; }
+.v2 .ruta.cinco .etapa h4 { font-size: 1.15em; margin: 0.1em 0 0.25em; }
+.v2 .ruta.cinco .etapa p { margin: 0 0 0.3em; }
+.v2 .ruta.cinco .etapa code { font-size: 0.9em; }
+.v2 .ruta.cinco .logro { margin-top: 6px; padding: 5px 8px; }
+.reveal .v2 .frase { font-size: 0.8em; margin-top: 0.4em; }
+.v2 .leyenda span { display: inline-flex; align-items: center; gap: 8px; }
+.v2 .leyenda i { display: inline-block; width: 16px; height: 16px; border-radius: 4px; border: 2px solid; }
+.v2 .leyenda i.modelo { background: #eeeff8; border-color: var(--e3); }
+.v2 .leyenda i.codigo { background: #ebf3ee; border-color: var(--e2); }
+.v2 .leyenda i.sandbox { background: #f7f0e5; border-color: var(--e4); }
+.v2 .leyenda i.punteada { width: 22px; height: 0; border-radius: 0; border-width: 2px 0 0; border-style: dashed; border-color: var(--suave); }
+.v2 .arriba-v2 { grid-template-columns: 900px 1fr; gap: 14px; }
+.v2 .lado-v2 { font-size: 0.42em; }
+.v2 .lado-v2 .leyenda { gap: 6px; }
+.v2 .lado-v2 .cuenta { margin-top: 10px; padding: 7px 10px; }
+.v2 .ruta.cinco { margin-top: 10px; }
+.v2 .ruta.cinco .etapa { padding: 8px 12px; font-size: 0.42em; }
+.v2 .ruta.cinco .etapa .num { font-size: 1.4em; }
+.v2 .ruta.cinco .logro { margin-top: 4px; padding: 4px 8px; }
+.v2 h2 { margin-bottom: 0.2em; }
+
+/* ------------------------------------------------------------- qué hace cada nodo */
+.nodos-det .contraste-v { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.48em; margin-bottom: 10px; }
+.nodos-det .contraste-v div { padding: 6px 12px; border-radius: 10px; }
+.nodos-det .contraste-v .antes { background: #eef0f8; }
+.nodos-det .contraste-v .ahora { background: #fbeee8; }
+.nodos-det .contraste-v b { color: var(--tinta); }
+.nodos-det .etapas { display: grid; grid-template-columns: 1fr 1.08fr 1.12fr; gap: 12px; }
+.nodos-det .etapa-n { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 8px 12px; }
+.nodos-det .etapa-n h3 { font-size: 0.5em; color: var(--suave); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 6px; }
+.nodos-det .nodo { font-size: 0.4em; line-height: 1.32; padding: 6px 0 7px; border-top: 1px solid var(--linea); }
+.nodos-det .nodo:first-of-type { border-top: none; padding-top: 0; }
+.nodos-det .nodo .cab { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.nodos-det .nodo code { font-size: 1.12em; font-weight: 700; color: var(--tinta); }
+.nodos-det .tipo { font-size: 0.85em; font-weight: 700; padding: 1px 8px; border-radius: 999px; }
+.nodos-det .tipo.m { background: #eeeff8; color: var(--e3); }
+.nodos-det .tipo.c { background: #ebf3ee; color: var(--e2); }
+.nodos-det .tipo.s { background: #f7f0e5; color: #8a5d1f; }
+.nodos-det .prompt { color: var(--suave); font-style: italic; }
+.nodos-det .prompt b { font-style: normal; color: var(--e3); }
+.reveal .nodos-det .frase { font-size: 0.78em; margin-top: 0.4em; }
+.nodos-det .nodo { font-size: 0.45em; padding: 7px 0 8px; }
+.nodos-det .etapa-n { padding: 10px 14px; }
+.nodos-det .etapa-n h3 { font-size: 0.52em; }
+
+/* ------------------------------------------------------------- el grafo con cada nodo explicado */
+.nodos-grafo h2 { margin-bottom: 0.25em; }
+.nodos-grafo .lienzo { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 8px 10px; }
+.nodos-grafo .grafo-explicado-svg { width: 100%; height: auto; display: block; }
+.leyenda-ng { display: flex; gap: 22px; flex-wrap: wrap; font-size: 0.44em; color: var(--suave); margin-top: 10px; }
+.leyenda-ng span { display: inline-flex; align-items: center; gap: 8px; }
+.leyenda-ng i { display: inline-block; width: 16px; height: 16px; border-radius: 4px; border: 2px solid; }
+.leyenda-ng i.m { background: #eeeff8; border-color: var(--e3); }
+.leyenda-ng i.c { background: #ebf3ee; border-color: var(--e2); }
+.leyenda-ng i.s { background: #f7f0e5; border-color: var(--e4); }
+.leyenda-ng i.p { width: 22px; height: 0; border-radius: 0; border-width: 2px 0 0; border-style: dashed; border-color: var(--suave); }
+.reveal .nodos-grafo .frase { font-size: 0.8em; margin-top: 0.4em; }
+.leyenda-ng { gap: 18px; font-size: 0.42em; flex-wrap: nowrap; }
+
+/* ------------------------------------------------------------- el front */
+.front .cuatro-h { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.front .herr { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 10px 14px; font-size: 0.46em; line-height: 1.38; border-top: 6px solid; }
+.front .herr.html { border-top-color: #e34f26; }
+.front .herr.css { border-top-color: #1572b6; }
+.front .herr.js { border-top-color: #d4b800; }
+.front .herr.react { border-top-color: #149eca; }
+.front .herr .cab-h { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.front .herr .cab-h img { height: 30px; margin: 0; }
+.front .herr .cab-h b { font-size: 1.3em; color: var(--tinta); }
+.front .herr .es { font-weight: 700; color: var(--tinta); margin: 0 0 4px; }
+.front .herr .aqui { margin: 0; padding: 5px 8px; border-radius: 8px; background: #f1f4f8; }
+.front .herr .aqui b { color: var(--acento); }
+.front h3.junta { font-size: 0.55em; color: var(--suave); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.front .recorrido { display: flex; align-items: stretch; gap: 8px; }
+.front .recorrido .p { flex: 1; background: var(--caja); border: 2px solid var(--linea); border-radius: 12px; padding: 8px 10px; font-size: 0.42em; line-height: 1.32; text-align: center; }
+.front .recorrido .p b { display: block; font-size: 1.15em; color: var(--tinta); margin-bottom: 2px; }
+.front .recorrido .p.nav { border-color: #149eca; background: #eaf6fb; flex: 1.35; }
+.front .recorrido .p.api { border-color: var(--e4); }
+.front .recorrido .p.ag { border-color: var(--e3); }
+.front .recorrido .p.datos { border-color: var(--e2); }
+.front .recorrido .fl { display: flex; align-items: center; color: var(--suave); font-size: 0.7em; }
+.front .recorrido .mini { display: flex; justify-content: center; gap: 6px; margin-top: 4px; }
+.front .recorrido .mini img { height: 18px; margin: 0; }
+.reveal .front .frase { font-size: 0.78em; margin-top: 0.5em; }
+
+/* ------------------------------------------------------------- cierre */
+.cierre-final h1 { font-size: 1.6em; margin-bottom: 0.35em; }
+.cierre-final .valor-card h4 { font-size: 0.6em; }
+.cierre-final .valor-card p { font-size: 0.48em; }
+.cierre-final .vibe-final { margin: 0.9em auto 0; max-width: 1080px; padding: 16px 22px; border-radius: 16px; text-align: left;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,209,102,0.55); color: #e6edf7; font-size: 0.6em; line-height: 1.45; }
+.cierre-final .vibe-final b { color: #ffd166; }
+.cierre-final .gracias { color: #93a7c4; font-size: 0.55em; margin-top: 0.9em; }
+.front .herr { font-size: 0.54em; padding: 12px 16px; }
+.front .herr .cab-h img { height: 36px; }
+.front h3.junta { font-size: 0.6em; margin-top: 18px; }
+.front .recorrido .p { font-size: 0.5em; padding: 10px 12px; }
+.front .recorrido .mini img { height: 22px; }
+.reveal .front .frase { font-size: 0.88em; margin-top: 0.6em; }
+.cierre-final .valor-card h4 { font-size: 0.66em; }
+.cierre-final .valor-card p { font-size: 0.52em; }
+.cierre-final .vibe-final { font-size: 0.66em; }
+
+/* ------------------------------------------------------------- el front, señalado */
+.front-real .cuerpo { display: grid; grid-template-columns: 770px 1fr; gap: 18px; align-items: start; }
+.front-real .captura { position: relative; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(30,42,59,0.12); }
+.front-real .captura img { display: block; width: 100%; margin: 0; }
+.front-real .marca { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+  background: #c96442; color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 3px #fff, 0 3px 8px rgba(0,0,0,0.25); }
+.front-real ol.secciones { list-style: none; margin: 0; padding: 0; font-size: 0.42em; line-height: 1.3; }
+.front-real ol.secciones li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--linea); margin: 0; }
+.front-real ol.secciones li:last-child { border-bottom: none; }
+.front-real .n { width: 22px; height: 22px; border-radius: 50%; background: #c96442; color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.95em; }
+.front-real .sec b { color: var(--tinta); }
+.front-real .t { display: inline-block; font-size: 0.82em; font-weight: 700; padding: 0 7px; border-radius: 999px; margin-left: 4px; color: #fff; }
+.front-real .t.html { background: #e34f26; }
+.front-real .t.css { background: #1572b6; }
+.front-real .t.js { background: #b8a000; }
+.front-real .t.react { background: #149eca; }
+.front-real .estilo-todo { margin-top: 8px; font-size: 0.42em; padding: 6px 10px; border-radius: 10px; background: #eaf2fa; border-left: 5px solid #1572b6; }
+.reveal .front-real .frase { font-size: 0.78em; margin-top: 0.45em; }
+
+/* Opción B: el grafo un poco más chico y, debajo, un ejemplo recorrido. */
+.nodos-grafo .lienzo { padding: 4px 8px; }
+.nodos-grafo .grafo-explicado-svg { width: 86%; margin: 0 auto; }
+.nodos-grafo .leyenda-ng { margin-top: 6px; }
+.ejemplo-flujo { display: flex; align-items: stretch; gap: 6px; margin-top: 8px; }
+.ejemplo-flujo .ef { flex: 1; border-radius: 10px; padding: 6px 10px; font-size: 0.4em; line-height: 1.3; background: var(--caja); border: 1px solid var(--linea); }
+.ejemplo-flujo .ef b { display: block; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1px; }
+.ejemplo-flujo .ef.preg { background: #2f5d8a; color: #fff; border: none; flex: 1.25; }
+.ejemplo-flujo .ef.preg b { color: #ffd166; }
+.ejemplo-flujo .ef.comp { border-left: 5px solid var(--e4); }
+.ejemplo-flujo .ef.comp b { color: #8a5d1f; }
+.ejemplo-flujo .ef.leer { border-left: 5px solid var(--e3); background: #eeeff8; flex: 1.3; }
+.ejemplo-flujo .ef.leer b { color: var(--e3); }
+.ejemplo-flujo .ef.expl b, .ejemplo-flujo .ef.red b { color: var(--e3); }
+.ejemplo-flujo .ef.expl, .ejemplo-flujo .ef.red { border-left: 5px solid var(--e3); }
+.ejemplo-flujo .fl { display: flex; align-items: center; color: var(--suave); font-size: 0.6em; }
+.reveal .nodos-grafo .frase { font-size: 0.72em; margin-top: 0.35em; }
+
+/* ------------------------------------------------------------- el sandbox: seguridad y crecimiento */
+.sandbox-crece .tres-s { display: grid; grid-template-columns: 1fr 1.15fr 1.2fr; gap: 14px; align-items: stretch; }
+.sandbox-crece .col { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 12px 14px; font-size: 0.47em; line-height: 1.38; border-top: 6px solid; }
+.sandbox-crece .col.c1 { border-top-color: var(--e4); }
+.sandbox-crece .col.c2 { border-top-color: var(--mal); }
+.sandbox-crece .col.c3 { border-top-color: var(--e3); }
+.sandbox-crece .col h3 { font-size: 1.2em; color: var(--tinta); margin: 0 0 6px; }
+.sandbox-crece .col p { margin: 0 0 6px; }
+.sandbox-crece .pasos-s { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
+.sandbox-crece .pasos-s div { padding: 5px 10px; border-radius: 8px; background: #f7f0e5; }
+.sandbox-crece .pasos-s div b { color: #8a5d1f; }
+.sandbox-crece .candados { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0 8px; }
+.sandbox-crece .candados span { padding: 2px 9px; border-radius: 999px; background: #fbefee; color: var(--mal); font-weight: 700; font-size: 0.92em; }
+.sandbox-crece .libs { display: flex; flex-wrap: wrap; gap: 5px; margin: 2px 0 8px; }
+.sandbox-crece .libs code { padding: 1px 8px; border-radius: 6px; background: #eef2f7; font-size: 0.95em; }
+.sandbox-crece .amenaza { padding: 7px 10px; border-radius: 10px; background: #fbefee; border-left: 5px solid var(--mal); }
+.sandbox-crece .amenaza b { color: var(--mal); }
+.sandbox-crece .ruta-s { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 8px; }
+.sandbox-crece .ruta-s div { display: grid; grid-template-columns: 78px 1fr; gap: 8px; align-items: start; padding: 5px 8px; border-radius: 8px; background: #eeeff8; }
+.sandbox-crece .ruta-s div span { font-weight: 800; color: var(--e3); text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.04em; padding-top: 1px; }
+.sandbox-crece .ruta-s div.hoy { background: #f7f0e5; }
+.sandbox-crece .ruta-s div.hoy span { color: #8a5d1f; }
+.sandbox-crece .agentica { padding: 7px 10px; border-radius: 10px; background: #eeeff8; border-left: 5px solid var(--e3); }
+.sandbox-crece .agentica b { color: var(--e3); }
+.reveal .sandbox-crece .frase { font-size: 0.8em; margin-top: 0.5em; }
+.sandbox-crece .col { font-size: 0.53em; padding: 14px 16px; }
+.sandbox-crece .pasos-s, .sandbox-crece .ruta-s { gap: 7px; }
+.reveal .sandbox-crece .frase { font-size: 0.86em; margin-top: 0.6em; }
+
+/* Opción B contada como historia: la pregunta, los cuatro estados, el grafo. */
+.nodos-grafo .pregunta-top { margin: 0 0 8px; padding: 7px 14px; border-radius: 10px; background: #2f5d8a; color: #fff; font-size: 0.52em; }
+.nodos-grafo .pregunta-top b { color: #ffd166; }
+.estados { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
+.estados .est { position: relative; background: var(--caja); border: 1px solid var(--linea); border-radius: 12px; padding: 7px 10px; font-size: 0.4em; line-height: 1.32; border-top: 5px solid; }
+.estados .est.e-1 { border-top-color: var(--e3); }
+.estados .est.e-2 { border-top-color: var(--e2); }
+.estados .est.e-3 { border-top-color: var(--e4); }
+.estados .est.e-4 { border-top-color: #c96442; }
+.estados .est h4 { font-family: "Inter", sans-serif; text-transform: none; letter-spacing: 0; font-size: 1.15em; font-weight: 800; color: var(--tinta); margin: 0 0 3px; }
+.estados .est .nod { font-family: "JetBrains Mono", monospace; font-size: 0.9em; color: var(--suave); margin-bottom: 4px; }
+.estados .est .val { padding: 4px 7px; border-radius: 7px; background: #f1f4f8; }
+.estados .est .val b { color: var(--acento); }
+.nodos-grafo .grafo-explicado-svg { width: 70%; }
+.reveal .nodos-grafo .frase { font-size: 0.66em; margin-top: 0.3em; }
+
+/* Lámina 6: cuatro cajas sobre el sandbox. */
+.cuatro-sb { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 8px; }
+.cuatro-sb .sb { background: var(--caja); border: 1px solid var(--linea); border-radius: 12px; padding: 7px 11px; font-size: 0.4em; line-height: 1.32; border-top: 5px solid; }
+.cuatro-sb .sb.c1 { border-top-color: var(--e4); }
+.cuatro-sb .sb.c2 { border-top-color: var(--e2); }
+.cuatro-sb .sb.c3 { border-top-color: var(--e3); }
+.cuatro-sb .sb.c4 { border-top-color: var(--mal); }
+.cuatro-sb .sb.c4 b { color: var(--mal); }
+.cuatro-sb h3 { font-size: 1.2em; color: var(--tinta); margin: 0 0 3px; text-transform: none; letter-spacing: 0; }
+.cuatro-sb ul { margin: 0; padding-left: 1.1em; }
+.cuatro-sb li { margin: 0 0 2px; }
+.cuatro-sb code { font-size: 0.9em; padding: 0 4px; border-radius: 4px; background: #eef2f7; }
+
+/* Lámina 5: el grafo es lo central. Estados compactos, leyenda dentro del lienzo. */
+.nodos-grafo h2 { margin-bottom: 0.15em; }
+.nodos-grafo .pregunta-top { margin-bottom: 6px; padding: 5px 14px; font-size: 0.48em; }
+.estados { gap: 8px; margin-bottom: 6px; }
+.estados .est { padding: 5px 9px; font-size: 0.36em; line-height: 1.3; border-top-width: 4px; }
+.estados .est h4 { font-size: 1.12em; margin: 0 0 3px; }
+.estados .est h4 .nod { display: inline; font-weight: 400; font-size: 0.78em; margin-left: 4px; }
+.estados .est .val { padding: 3px 7px; }
+.estados .est.e-4 { background: #fbf3ee; }
+.estados .est .suma { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.estados .est .suma span { padding: 1px 7px; border-radius: 999px; background: #c96442; color: #fff; font-weight: 700; font-size: 0.9em; }
+.nodos-grafo .lienzo { padding: 4px 8px 6px; }
+.nodos-grafo .grafo-explicado-svg { width: 92%; margin: 0 auto; }
+.nodos-grafo .lienzo .leyenda-ng { justify-content: center; margin-top: 2px; font-size: 0.4em; }
+.estados .est h4 .nod { display: block; margin: 1px 0 0; }
+
+/* Lámina 5: la respuesta final, redactada y con criterio, gana espacio. */
+.estados { grid-template-columns: 1fr 1fr 1fr 1.75fr; }
+.estados .est.e-4 { border: 2px solid #c96442; border-top-width: 5px; }
+.estados .est .val.resp { background: #fff; line-height: 1.34; }
+.estados .est .val.resp .criterio { display: block; margin-top: 3px; padding-top: 3px; border-top: 1px dashed #e3c3b5; color: #8a3f22; }
+.estados .est .val.resp .criterio b { color: #c96442; }
+.nodos-grafo .grafo-explicado-svg { width: 84%; }
+.estados { grid-template-columns: 1fr 1fr 1fr 1.45fr; }
+.nodos-grafo .grafo-explicado-svg { width: 91%; }
+.nodos-grafo .grafo-explicado-svg { width: 88%; }
+
+/* Lámina 5: estados con cifras rotuladas y letra más grande. */
+.estados .est { font-size: 0.42em; }
+.estados .est h4 { font-size: 1.08em; }
+.estados .est ul.lineas { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.estados .est ul.lineas li { padding: 2px 7px; border-radius: 6px; background: #f1f4f8; }
+.estados .est ul.lineas i { font-style: normal; font-weight: 700; color: var(--suave); }
+.estados .est ul.lineas b { color: var(--acento); }
+.estados .est .val.resp { font-size: 0.97em; }
+.estados { grid-template-columns: 0.95fr 1.15fr 1.1fr 1.4fr; gap: 7px; }
+.estados .est { font-size: 0.4em; padding: 5px 8px; }
+.estados .est ul.lineas { gap: 2px; }
+.estados .est ul.lineas li { padding: 1px 6px; }
+.nodos-grafo .grafo-explicado-svg { width: 85%; }
+.estados .est.e-4 .val.resp { font-size: 0.93em; line-height: 1.28; }
+.estados .est.e-4 .nod { display: inline; margin-left: 4px; }
+.nodos-grafo .cabecera { margin-bottom: 2px; }
+.nodos-grafo h2 { margin-top: 0; }
+
+/* Cierre: lo que falta, en dos frentes. */
+.cierre-final h1 { font-size: 1.4em; margin-bottom: 0.3em; }
+.falta-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; text-align: left; }
+.falta-lado h3 { font-family: "Inter", sans-serif; text-transform: none; letter-spacing: 0; font-size: 0.62em; margin: 0 0 8px; padding: 4px 12px; border-radius: 8px; display: inline-block; }
+.falta-lado.tec h3 { background: #2f5d8a; color: #fff; }
+.falta-lado.neg h3 { background: #ffd166; color: #1e2a3b; }
+.falta-dos .valor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+.falta-dos .valor-card { padding: 10px 14px; }
+.falta-lado.neg .valor-card { border-color: rgba(255, 209, 102, 0.5); }
+.cierre-final .falta-dos .valor-card h4 { font-size: 0.58em; }
+.cierre-final .falta-dos .valor-card p { font-size: 0.46em; }
+.cierre-final .vibe-final { font-size: 0.56em; margin-top: 0.7em; padding: 12px 20px; }
+.cierre-final .gracias { margin-top: 0.6em; }
+.falta-lado.tec .valor-card { border-top-color: #6fa3d8; }
+.falta-lado.neg .valor-card { border-top-color: #ffd166; background: rgba(255, 209, 102, 0.08); }
+.estados .est .val.resp .insight { display: inline; padding: 1px 5px; border-radius: 5px; background: #c96442; color: #fff; font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone; }

@@ -1,0 +1,368 @@
+# Diccionario de la SÁBANA: el modelo agregado, una sola tabla.
+#
+# Es lo que el agente lee antes de escribir SQL. Va entero en el prompt (y en
+# caché). El modelo desagregado, con las cuatro tablas originales, está en
+# diccionario.yaml y no lo lee el agente.
+#
+# Todas las cifras salieron de ejecutar sabana.py sobre la muestra 1 del CMS
+# DE-SynPUF. Si cambias de muestra, vuelve a correrlo y actualiza esto.
+
+tabla: sabana
+motor: SQLite
+grano: Una fila = un reclamo. Nunca hace falta count(DISTINCT id_reclamo); count(*) cuenta reclamos.
+filas: 656147
+periodo: 2008 y 2009 completos, los doce meses de cada año. No hay otros años.
+advertencia: >
+  Datos SINTÉTICOS del CMS de Estados Unidos (Medicare). El CMS alteró a
+  propósito las relaciones entre variables. Sirven para construir herramientas,
+  no para inferir sobre la población real. Toda respuesta va en ese marco.
+
+reglas_sql:
+  - El motor es SQLite. Escribe SQL de SQLite, no de MySQL ni de otro motor. No existen YEAR(), MONTH(), DATE_FORMAT(), NOW() ni TOP; usa anio, mes y LIMIT.
+  - Una sola tabla. No hay uniones (JOIN) que hacer.
+  - Fechas como texto ISO 'AAAA-MM-DD'. Para filtrar o agrupar usa anio y mes (enteros), nunca parsees fecha_inicio.
+  - Los valores de texto están en español y con mayúscula inicial. Usa los valores exactos de abajo.
+  - Siempre muestra el SQL que usaste junto con la respuesta.
+
+columnas:
+  id_reclamo:            {tipo: texto, desc: "Identificador del reclamo. Único en la tabla."}
+  id_afiliado:           {tipo: texto, desc: "Asegurado que generó el reclamo. Para contar personas: count(DISTINCT id_afiliado)."}
+  ambito:                {tipo: texto, valores: [Hospitalario, Ambulatorio], desc: "Hospitalario = internación; Ambulatorio = atención sin internación."}
+  fecha_inicio:          {tipo: texto ISO, desc: "Fecha de inicio de la atención."}
+  anio:                  {tipo: entero, valores: [2008, 2009]}
+  mes:                   {tipo: entero, rango: "1 a 12"}
+  monto_pagado:          {tipo: decimal, desc: "Lo que pagó la aseguradora (Medicare). Métrica de costo POR DEFECTO."}
+  deducible:             {tipo: decimal, desc: "Deducible a cargo del afiliado."}
+  coaseguro:             {tipo: decimal, desc: "Coaseguro a cargo del afiliado."}
+  monto_pagado_tercero:  {tipo: decimal, desc: "Lo que pagó otro seguro primario."}
+  monto_total:           {tipo: decimal, desc: "Costo completo de la atención = monto_pagado + deducible + coaseguro + monto_pagado_tercero."}
+  sexo:                  {tipo: texto, valores: [Femenino, Masculino]}
+  raza:                  {tipo: texto, valores: [Blanca, Negra, Hispana, Otras]}
+  edad:                  {tipo: entero, rango: "24 a 100", desc: "Edad exacta del afiliado a la fecha del reclamo."}
+  banda_edad:            {tipo: texto, valores: ['00-05', '06-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71+'], desc: "Las bandas 00-05, 06-10 y 11-20 existen pero están vacías: Medicare cubre a mayores de 65 y a personas con discapacidad."}
+  estado:                {tipo: texto, desc: "Estado de residencia del afiliado, nombre en español (ver valores_estado)."}
+  codigo_condado:        {tipo: texto, desc: "Condado en código SSA, sin nombre. Solo identifica un condado junto con estado. Aleatorizado por el CMS."}
+  diagnostico_principal: {tipo: texto, desc: "Código CIE-9 del diagnóstico principal. Sin traducción: si no sabes qué significa un código, dilo."}
+  categoria:             {tipo: texto, desc: "Tres primeros dígitos del diagnóstico principal."}
+  grupo_enfermedad:      {tipo: texto, desc: "Capítulo CIE-9 del diagnóstico principal, en español (ver valores_grupo_enfermedad). ES LA COLUMNA PARA RESPONDER 'en qué enfermedades se concentra el costo'."}
+  procedimiento_principal: {tipo: texto, desc: "Código CIE-9 de procedimiento, sin traducción. Vacío en 43 % de los hospitalarios y en 99,97 % de los ambulatorios: úsalo solo en hospitalario."}
+  medico_tratante:       {tipo: texto, desc: "Identificador del médico responsable. Aleatorizado: sirve para agrupar, no identifica a nadie real. 14 423 médicos en hospitalario, 88 464 en ambulatorio."}
+  id_prestador:          {tipo: texto, desc: "Identificador del hospital o clínica. Aleatorizado."}
+  grupo_drg:             {tipo: texto, desc: "Grupo DRG (739 grupos, sin traducción). Solo hospitalario; NULL en ambulatorio."}
+  dias_estancia:         {tipo: entero, rango: "0 a 113", desc: "Días de internación. Solo hospitalario; NULL en ambulatorio."}
+
+valores_grupo_enfermedad:
+  - Enfermedades del aparato circulatorio
+  - Enfermedades del aparato respiratorio
+  - Enfermedades del aparato digestivo
+  - Enfermedades del aparato genitourinario
+  - Enfermedades del sistema osteomuscular y tejido conjuntivo
+  - Enfermedades del sistema nervioso y de los sentidos
+  - Enfermedades endocrinas, nutricionales y metabólicas
+  - Enfermedades infecciosas y parasitarias
+  - Enfermedades de la piel y del tejido subcutáneo
+  - Enfermedades de la sangre y órganos hematopoyéticos
+  - Neoplasias
+  - Trastornos mentales
+  - Lesiones y envenenamientos
+  - Causas externas de lesiones y envenenamientos
+  - Complicaciones del embarazo, parto y puerperio
+  - Afecciones originadas en el periodo perinatal
+  - Anomalías congénitas
+  - Síntomas, signos y estados mal definidos
+  - Factores que influyen en el estado de salud
+  - "Sin clasificar (marcador 'OTHER' del CMS)"
+
+valores_estado: [Alabama, Alaska, Arizona, Arkansas, California, Carolina del Norte,
+  Carolina del Sur, Colorado, Connecticut, Dakota del Norte, Dakota del Sur, Delaware,
+  Distrito de Columbia, Florida, Georgia, Hawái, Idaho, Illinois, Indiana, Iowa, Kansas,
+  Kentucky, Luisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Misisipi,
+  Misuri, Montana, Nebraska, Nevada, Nueva Jersey, Nueva York, Nuevo Hampshire,
+  Nuevo México, Ohio, Oklahoma, Oregón, Otros territorios y exterior, Pensilvania,
+  Rhode Island, Tennessee, Texas, Utah, Vermont, Virginia, Virginia Occidental,
+  Washington, Wisconsin, Wyoming]
+
+trampas:
+  costo_ambiguo: >
+    No existe un único "costo". monto_pagado es lo que pagó la aseguradora (por
+    defecto); monto_total es el costo completo de la atención, y en 2009 es
+    20,7 % mayor. Si la pregunta no lo aclara, usa monto_pagado y DECLARA qué
+    definición usaste.
+  montos_en_cero: >
+    Hay 25 024 reclamos con monto_pagado = 0 (23 260 ambulatorios, 1 764
+    hospitalarios). Son válidos y cuentan como reclamos: no los filtres con
+    monto_pagado > 0. Los negativos ya fueron excluidos al construir la tabla.
+  sin_per_capita: >
+    La tabla solo tiene afiliados que tuvieron al menos un reclamo. El gasto per
+    cápita y la frecuencia de uso sobre toda la población NO se pueden calcular
+    aquí: si te lo piden, dilo en lugar de dividir por los afiliados presentes.
+  other_no_es_diagnostico: >
+    'OTHER' en diagnostico_principal es un marcador del CMS, no un diagnóstico.
+    Su grupo_enfermedad es "Sin clasificar (marcador 'OTHER' del CMS)". Hay
+    además 29 reclamos sin diagnóstico (grupo_enfermedad NULL). Si aparecen en un
+    resultado, nómbralos como lo que son.
+  codigos_sin_traduccion: >
+    diagnostico_principal, procedimiento_principal y grupo_drg son códigos sin
+    descripción en esta base. No inventes su significado: usa grupo_enfermedad
+    para hablar de enfermedades, y si citas un código, di que no tienes su
+    descripción.
+  ambitos_no_comparables: >
+    Un reclamo hospitalario promedia unos 9 500 de monto_pagado y uno ambulatorio
+    unos 290. Promediar los dos juntos mezcla cosas distintas: si la pregunta es
+    sobre costo promedio, sepáralo por ambito o pregunta cuál.
+
+  verificar_la_premisa: >
+    Una pregunta puede traer una premisa falsa. "¿En qué se concentró el alza
+    hospitalaria de 2009?" supone un alza que no existe: el pagado hospitalario
+    bajó 4,9 % (lo que subió fue el promedio por reclamo, +4,4 %). El alza está
+    en ambulatorio (+20,1 %). Antes de explicar un cambio, confirma su signo y
+    dilo si la premisa no se cumple.
+
+metricas:
+  costo:                   sum(monto_pagado)
+  costo_completo:          sum(monto_total)
+  numero_de_reclamos:      count(*)
+  numero_de_afiliados:     count(DISTINCT id_afiliado)
+  costo_promedio_por_reclamo: sum(monto_pagado) * 1.0 / count(*)
+  estancia_promedio:       avg(dias_estancia), solo con ambito = 'Hospitalario'
+
+# Consultas de ejemplo con su resultado verificado contra la base.
+# Muestran el patrón de SQL esperado para cada tipo de pregunta.
+#
+# Se activan por nivel: `activa_desde` permite filtrar los ejemplos
+# que entran al prompt. Tres niveles:
+#   basica       una pregunta, un SQL.                           (desde 02)
+#   comparativa  dos periodos en un SQL, con CASE WHEN.          (desde 03)
+#   multipaso    varios pasos; cada uno usa el contexto o el
+#                resultado del anterior. Es el trabajo del grafo. (desde 03)
+consultas_ejemplo:
+
+  - pregunta: ¿Cuánto se pagó en hospitalización en 2009?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE ambito = 'Hospitalario' AND anio = 2009;
+    resultado: "245 512 790,00"
+
+  - pregunta: ¿Cuál fue el costo promedio por reclamo hospitalario en cada año?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT anio, count(*) AS reclamos,
+             round(sum(monto_pagado) * 1.0 / count(*), 2) AS promedio
+      FROM sabana
+      WHERE ambito = 'Hospitalario'
+      GROUP BY anio ORDER BY anio;
+    resultado: "2008: 9 331,21 sobre 27 656 reclamos. 2009: 9 738,71 sobre 25 210 reclamos."
+
+  - pregunta: ¿Cuál fue el costo total de 2009?
+    nivel: basica
+    activa_desde: "02"
+    nota: Ambigua. Se muestran las dos definiciones y se declara cuál es cuál.
+    sql: |
+      SELECT sum(monto_pagado) AS pagado_aseguradora,
+             sum(monto_total)  AS costo_completo
+      FROM sabana
+      WHERE anio = 2009;
+    resultado: "Pagado por la aseguradora 339 697 080,00; costo completo 410 033 336,00 (+20,7 %)."
+
+  - pregunta: ¿En qué grupos de enfermedad se concentra el costo hospitalario?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT grupo_enfermedad, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE ambito = 'Hospitalario'
+      GROUP BY grupo_enfermedad
+      ORDER BY pagado DESC
+      LIMIT 5;
+    resultado: "Aparato circulatorio 130 733 060 (12 616 reclamos); respiratorio 60 921 100; lesiones y envenenamientos 52 526 820; digestivo 44 109 630; osteomuscular 40 694 340."
+
+  - pregunta: ¿Cómo se reparte el costo de 2009 por banda de edad y ámbito?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT banda_edad, ambito, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE anio = 2009
+      GROUP BY banda_edad, ambito
+      ORDER BY banda_edad, ambito;
+    resultado: "71+ concentra la mayor parte: 153 724 530 hospitalario y 58 362 460 ambulatorio. No hay reclamos por debajo de 21 años."
+
+  - pregunta: ¿Cuánto cuesta en promedio un reclamo según sexo y raza?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT sexo, raza, count(*) AS reclamos,
+             round(avg(monto_pagado), 2) AS promedio
+      FROM sabana
+      GROUP BY sexo, raza
+      ORDER BY promedio DESC;
+    resultado: "Más alto: Masculino/Negra 1 133,31. Más bajo: Femenino/Hispana 910,47. Mezcla ambos ámbitos."
+
+  - pregunta: ¿Qué estados y qué condados de California concentran más costo?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT estado, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      GROUP BY estado ORDER BY pagado DESC LIMIT 5;
+
+      SELECT codigo_condado, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE estado = 'California'
+      GROUP BY codigo_condado ORDER BY pagado DESC LIMIT 5;
+    resultado: "Estados: California 53 839 440, Florida 48 982 920, Texas 46 748 800. Condado 200 de California: 11 875 100 (el código no tiene nombre)."
+
+  - pregunta: ¿Qué médicos tratantes concentran más pago hospitalario?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT medico_tratante, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE ambito = 'Hospitalario' AND medico_tratante IS NOT NULL
+      GROUP BY medico_tratante
+      ORDER BY pagado DESC
+      LIMIT 5;
+    resultado: "Médico 9011551271: 4 424 000 en 425 reclamos. Los identificadores son aleatorizados."
+
+  - pregunta: ¿Cuáles son los procedimientos hospitalarios más frecuentes?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT procedimiento_principal, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE ambito = 'Hospitalario' AND procedimiento_principal IS NOT NULL
+      GROUP BY procedimiento_principal
+      ORDER BY reclamos DESC
+      LIMIT 5;
+    resultado: "9904 con 1 462 reclamos, 8154 con 1 247, 3893 con 1 155. Son códigos CIE-9 de procedimiento sin descripción en la base."
+
+  - pregunta: ¿Cómo evolucionó el costo mes a mes en 2009?
+    nivel: basica
+    activa_desde: "02"
+    sql: |
+      SELECT mes, count(*) AS reclamos, sum(monto_pagado) AS pagado
+      FROM sabana
+      WHERE anio = 2009
+      GROUP BY mes ORDER BY mes;
+    resultado: "Entre 25,4 y 30,3 millones por mes; enero 30 173 770, diciembre 25 599 750."
+
+  # ------------------------------------------------------------ comparativas
+  # Dos periodos lado a lado en un solo SQL. El patrón es siempre el mismo:
+  # sum(CASE WHEN anio = 2008 ...) junto a sum(CASE WHEN anio = 2009 ...).
+
+  - pregunta: ¿Cómo cambió el costo entre 2008 y 2009 en cada ámbito?
+    nivel: comparativa
+    activa_desde: "03"
+    sql: |
+      SELECT ambito,
+             sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) AS pagado_2008,
+             sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END) AS pagado_2009,
+             round(100.0 * (sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END)
+                          / sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) - 1), 1) AS variacion_pct
+      FROM sabana
+      GROUP BY ambito;
+    resultado: "Ambulatorio 78 449 490 -> 94 184 290 (+20,1 %). Hospitalario 258 063 920 -> 245 512 790 (-4,9 %). Total +0,9 %."
+
+  - pregunta: ¿En qué grupos de enfermedad se concentró el alza ambulatoria de 2008 a 2009?
+    nivel: comparativa
+    activa_desde: "03"
+    sql: |
+      SELECT grupo_enfermedad,
+             sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) AS pagado_2008,
+             sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END) AS pagado_2009,
+             sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END)
+               - sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) AS diferencia
+      FROM sabana
+      WHERE ambito = 'Ambulatorio'
+      GROUP BY grupo_enfermedad
+      ORDER BY diferencia DESC
+      LIMIT 5;
+    resultado: "Del alza de 15 734 800: factores que influyen en el estado de salud +3 786 990, aparato circulatorio +1 875 410, neoplasias +1 572 620, síntomas mal definidos +1 566 130."
+
+  - pregunta: ¿Cómo cambió el costo por banda de edad entre 2008 y 2009?
+    nivel: comparativa
+    activa_desde: "03"
+    sql: |
+      SELECT banda_edad,
+             sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) AS pagado_2008,
+             sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END) AS pagado_2009,
+             round(100.0 * (sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END)
+                          / sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) - 1), 1) AS variacion_pct
+      FROM sabana
+      GROUP BY banda_edad
+      ORDER BY banda_edad;
+    resultado: "71+ +1,8 % (208 260 440 -> 212 086 990); 61-70 +1,5 %; 21-30 -14,1 %."
+
+  - pregunta: ¿Cómo cambió el costo promedio por reclamo según ámbito y sexo?
+    nivel: comparativa
+    activa_desde: "03"
+    sql: |
+      SELECT ambito, sexo,
+             round(sum(CASE WHEN anio = 2008 THEN monto_pagado END) * 1.0
+                   / sum(anio = 2008), 2) AS promedio_2008,
+             round(sum(CASE WHEN anio = 2009 THEN monto_pagado END) * 1.0
+                   / sum(anio = 2009), 2) AS promedio_2009
+      FROM sabana
+      GROUP BY ambito, sexo;
+    resultado: "Hospitalario Femenino 9 281,90 -> 9 716,25; Masculino 9 393,85 -> 9 768,78. Ambulatorio Femenino 279,95 -> 294,08."
+
+  # --------------------------------------------------------------- multipaso
+  # Ninguno se resuelve con un solo SQL escrito de antemano: cada paso usa el
+  # contexto o el resultado del anterior. El grafo guarda cada resultado en su
+  # estado y lo pasa al paso siguiente.
+
+  - pregunta: Secuencia de apertura (drill-down) del costo de 2009
+    nivel: multipaso
+    activa_desde: "03"
+    tipo: apertura secuencial. Cada paso conserva los filtros y agrupaciones del anterior y suma una dimensión.
+    pasos:
+      - pide: ¿Cuánto se pagó en 2009 por sexo?
+        sql: SELECT sexo, count(*) AS reclamos, sum(monto_pagado) AS pagado FROM sabana WHERE anio = 2009 GROUP BY sexo;
+        resultado: "Femenino 194 706 510 (199 599 reclamos); Masculino 144 990 570 (146 921)."
+      - pide: Ahora ábrelo por ámbito.
+        sql: SELECT sexo, ambito, count(*) AS reclamos, sum(monto_pagado) AS pagado FROM sabana WHERE anio = 2009 GROUP BY sexo, ambito;
+        resultado: "Femenino hospitalario 140 254 140, ambulatorio 54 452 370; Masculino hospitalario 105 258 650, ambulatorio 39 731 920."
+      - pide: Y ahora por raza.
+        sql: SELECT sexo, ambito, raza, count(*) AS reclamos, sum(monto_pagado) AS pagado FROM sabana WHERE anio = 2009 GROUP BY sexo, ambito, raza ORDER BY sexo, ambito, pagado DESC;
+        resultado: "Mayor celda: Femenino hospitalario Blanca 119 134 740 (12 205 reclamos)."
+
+  - pregunta: Dos consultas y una operación sobre sus resultados
+    nivel: multipaso
+    activa_desde: "03"
+    tipo: operar resultados. Se consulta un valor, luego otro, y se calcula con los dos ya guardados.
+    pasos:
+      - pide: ¿Cuánto se pagó en hospitalización en 2009?
+        sql: SELECT sum(monto_pagado) AS pagado FROM sabana WHERE ambito = 'Hospitalario' AND anio = 2009;
+        resultado: "245 512 790"
+      - pide: Ahora dímelo con base en 2008.
+        sql: SELECT sum(monto_pagado) AS pagado FROM sabana WHERE ambito = 'Hospitalario' AND anio = 2008;
+        resultado: "258 063 920"
+      - pide: (operación sobre los dos resultados guardados, sin SQL nuevo)
+        calculo: 245 512 790 / 258 063 920 - 1
+        resultado: "-4,9 %. El costo hospitalario BAJÓ, aunque el promedio por reclamo subió 4,4 % (hay 8,8 % menos reclamos)."
+
+  - pregunta: ¿Dónde se concentró el alza de costo de 2008 a 2009?
+    nivel: multipaso
+    activa_desde: "03"
+    tipo: plan dependiente. El SQL de cada paso depende de lo que encontró el anterior.
+    pasos:
+      - pide: Variación por ámbito.
+        sql: (comparativa por ámbito, ver arriba)
+        resultado: "El total sube apenas 0,9 %. Hospitalario baja 4,9 %; ambulatorio sube 20,1 %. El alza está en ambulatorio."
+      - pide: Dentro de ambulatorio, variación por grupo de enfermedad.
+        sql: (comparativa por grupo con WHERE ambito = 'Ambulatorio', ver arriba)
+        resultado: "Factores que influyen en el estado de salud +3 786 990; aparato circulatorio +1 875 410."
+      - pide: Dentro de ambulatorio y aparato circulatorio, variación por banda de edad.
+        sql: |
+          SELECT banda_edad,
+                 sum(CASE WHEN anio = 2009 THEN monto_pagado ELSE 0 END)
+                   - sum(CASE WHEN anio = 2008 THEN monto_pagado ELSE 0 END) AS diferencia
+          FROM sabana
+          WHERE ambito = 'Ambulatorio'
+            AND grupo_enfermedad = 'Enfermedades del aparato circulatorio'
+          GROUP BY banda_edad ORDER BY diferencia DESC;
+        resultado: "71+ explica 1 261 850 de los 1 875 410; 61-70, 383 510."

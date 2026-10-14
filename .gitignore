@@ -1,0 +1,68 @@
+# ─── Archivo local: NUNCA al repositorio ───────────────────────
+# Material de proyectos anteriores que se conserva solo en esta máquina.
+# No se cita, no se copia y no se sube.
+_archivo_local/
+
+# ─── Datos: NUNCA al repositorio ───────────────────────────────
+# GitHub rechaza archivos de más de 100 MB, y un archivo que entra al
+# historial queda ahí para siempre aunque se borre después.
+# La base pública se regenera con los scripts de backend/datos_basePublica/
+# (descargar.py → preparar.py → sabana.py).
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.zip
+*.parquet
+*.csv
+backend/datos_basePublica/crudos/
+backend/datos_basePublica/extraidos/
+# (si alguna vez necesitás versionar un CSV chico: git add -f archivo.csv)
+
+# ─── MySQL: existe en la máquina, no se usa ni se sube ─────────
+# El agente trabaja solo sobre SQLite. Lo de MySQL queda local.
+datos/
+backend/datos/
+docker-compose.yml
+GUIA_APRENDIZAJE.md
+codigos_levantamientoServicios.txt
+
+# ─── Historial del agente (SQLite, se crea solo al arrancar) ──
+# Guarda preguntas, respuestas y costos de cada usuario: no se sube.
+backend/datos_app/
+
+# ─── Secretos ──────────────────────────────────────────────────
+.env
+!.env.example
+
+# ─── Python ────────────────────────────────────────────────────
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# ─── Node / frontend ───────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ─── Logs ──────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Editor y sistema operativo ────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Trazas del agente: contienen los prompts completos y los resultados de las
+# consultas. No van al repositorio.
+backend/trazas/

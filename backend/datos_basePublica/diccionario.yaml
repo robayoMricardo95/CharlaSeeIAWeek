@@ -1,0 +1,379 @@
+# Diccionario de negocio de la base de reclamos médicos.
+#
+# Esto es lo que el agente lee antes de escribir SQL. No es documentación para
+# humanos: es el contexto sin el cual el agente produce consultas que corren
+# pero responden mal.
+#
+# Todas las cifras salieron de ejecutar preparar.py sobre la muestra 1 del
+# CMS DE-SynPUF. Si cambias de muestra, vuelve a correrlo y actualiza esto.
+
+fuente:
+  nombre: CMS DE-SynPUF (Data Entrepreneurs' Synthetic Public Use File)
+  organismo: Centers for Medicare & Medicaid Services, Estados Unidos
+  muestra: 1 de 20
+  periodo_declarado: 2008-2010
+  advertencia: >
+    Los datos son sintéticos. El CMS alteró deliberadamente las relaciones entre
+    variables para proteger la privacidad. Sirven para construir y probar
+    herramientas; NO admiten inferencia sobre la población real de Medicare.
+    Cualquier respuesta del agente debe entenderse en ese marco.
+
+motor: SQLite
+archivo: backend/datos_basePublica/reclamos.db
+
+convenciones_sqlite: >
+  SQLite no tiene tipo DATE. Todas las fechas se guardan como TEXT en formato
+  ISO 'AAAA-MM-DD', que es la convención de SQLite: ordena y compara
+  correctamente con <, > y BETWEEN, y funciona con strftime() y date().
+  Las tablas de reclamos tienen además tres columnas INTEGER derivadas de
+  fecha_inicio: `anio`, `mes` y `dia`. Úsalas para filtrar o agrupar: son más
+  rápidas (anio y mes están indexadas juntas) y más legibles que
+  strftime('%Y', fecha_inicio).
+
+valores_en_espanol: >
+  Los valores de las columnas categóricas ya están traducidos: sexo
+  ('Masculino'/'Femenino'), raza ('Blanca'/'Negra'/'Otras'/'Hispana') y estado
+  (nombre del estado en español, desde el código SSA). Los diagnósticos tienen
+  su capítulo de la CIE-9 con nombre en español en la tabla `diagnosticos`.
+
+  Las banderas binarias (los once cronico_* y enfermedad_renal_terminal) se
+  dejaron como 1/0 y NO como 'Sí'/'No' a propósito: así sum(cronico_diabetes)
+  cuenta afiliados con diabetes directamente, y avg() da la prevalencia. Con
+  texto habría que escribir un CASE en cada consulta.
+
+tablas:
+
+  afiliados:
+    descripcion: >
+      Un registro por persona asegurada, con su demografía, meses de cobertura,
+      banderas de condición crónica y el gasto acumulado del año 2008.
+    grano: un afiliado
+    filas: 116352
+    llave: id_afiliado
+    nota_importante: >
+      Los montos anuales de esta tabla (pago_anual_*) corresponden SOLO a 2008.
+      Las tablas de reclamos cubren 2008-2010. No son comparables directamente:
+      si alguien pregunta por gasto por afiliado en 2009, hay que calcularlo
+      desde las tablas de reclamos, no desde aquí.
+    columnas:
+      id_afiliado:         {origen: DESYNPUF_ID, tipo: texto, desc: "Identificador del afiliado. Llave para unir con todas las demás tablas."}
+      fecha_nacimiento:    {origen: BENE_BIRTH_DT, tipo: texto_fecha, desc: "Fecha de nacimiento. En el origen venía como entero AAAAMMDD."}
+      fecha_defuncion:     {origen: BENE_DEATH_DT, tipo: texto_fecha, desc: "Fecha de fallecimiento. NULL si el afiliado seguía vivo al cierre."}
+      sexo:                {origen: BENE_SEX_IDENT_CD, tipo: texto, valores: "Masculino, Femenino", desc: "Ya traducido. El origen traía 1=hombre, 2=mujer."}
+      raza:                {origen: BENE_RACE_CD, tipo: texto, valores: "Blanca, Negra, Otras, Hispana", desc: "Ya traducida. 'Otras' agrupa desconocida, otra, asiática y nativa norteamericana, según el codebook. En el origen eran los códigos 1, 2, 3 y 5; no existe el 4."}
+      enfermedad_renal_terminal: {origen: BENE_ESRD_IND, tipo: entero, valores: "1=sí, 0=no", desc: "El origen traía 'Y'/'0'; ya está normalizado."}
+      codigo_estado:       {origen: SP_STATE_CODE, tipo: texto, desc: "Estado de residencia en codificación SSA, NO FIPS. 01 a 54, sin 40 ni 48."}
+      codigo_condado:      {origen: BENE_COUNTY_CD, tipo: texto, desc: "Condado en codificación SSA. Solo identifica un condado combinado con codigo_estado."}
+      meses_cobertura_hospitalaria: {origen: BENE_HI_CVRAGE_TOT_MONS, tipo: entero, rango: "0 a 12", desc: "Meses con cobertura hospitalaria (Parte A) en el año."}
+      meses_cobertura_medica:       {origen: BENE_SMI_CVRAGE_TOT_MONS, tipo: entero, rango: "0 a 12", desc: "Meses con cobertura médica ambulatoria (Parte B)."}
+      meses_cobertura_hmo:          {origen: BENE_HMO_CVRAGE_TOT_MONS, tipo: entero, rango: "0 a 12", desc: "Meses en un plan privado administrado."}
+      meses_cobertura_farmacia:     {origen: PLAN_CVRG_MOS_NUM, tipo: entero, rango: "0 a 12", desc: "Meses con cobertura de medicamentos (Parte D)."}
+      pago_anual_hospitalario:   {origen: MEDREIMB_IP, tipo: decimal, desc: "Pagado por el asegurador en 2008 por hospitalización."}
+      copago_anual_hospitalario: {origen: BENRES_IP, tipo: decimal, desc: "Asumido por el afiliado en 2008 por hospitalización."}
+      pago_tercero_hospitalario: {origen: PPPYMT_IP, tipo: decimal, desc: "Pagado por otro asegurador primario en 2008."}
+      pago_anual_ambulatorio:    {origen: MEDREIMB_OP, tipo: decimal, desc: "Pagado por el asegurador en 2008 por ambulatorio institucional."}
+      copago_anual_ambulatorio:  {origen: BENRES_OP, tipo: decimal, desc: "Asumido por el afiliado en 2008 por ambulatorio."}
+      pago_tercero_ambulatorio:  {origen: PPPYMT_OP, tipo: decimal, desc: "Pagado por un tercero en 2008 por ambulatorio."}
+      pago_anual_honorarios:     {origen: MEDREIMB_CAR, tipo: decimal, desc: "Pagado por el asegurador en 2008 por honorarios médicos."}
+      copago_anual_honorarios:   {origen: BENRES_CAR, tipo: decimal, desc: "Asumido por el afiliado en 2008 por honorarios."}
+      pago_tercero_honorarios:   {origen: PPPYMT_CAR, tipo: decimal, desc: "Pagado por un tercero en 2008 por honorarios."}
+    columnas_cronicas:
+      descripcion: >
+        Once banderas de condición crónica, todas 1=sí / 0=no tras la conversión.
+        En el CSV original venían 1=sí, 2=no. Ninguna es NULL.
+      lista:
+        cronico_alzheimer:              {origen: SP_ALZHDMTA,  desc: "Alzheimer, demencias relacionadas o senilidad."}
+        cronico_insuficiencia_cardiaca: {origen: SP_CHF,       desc: "Insuficiencia cardíaca."}
+        cronico_renal:                  {origen: SP_CHRNKIDN,  desc: "Enfermedad renal crónica."}
+        cronico_cancer:                 {origen: SP_CNCR,      desc: "Cáncer."}
+        cronico_epoc:                   {origen: SP_COPD,      desc: "Enfermedad pulmonar obstructiva crónica."}
+        cronico_depresion:              {origen: SP_DEPRESSN,  desc: "Depresión."}
+        cronico_diabetes:               {origen: SP_DIABETES,  desc: "Diabetes."}
+        cronico_cardiopatia_isquemica:  {origen: SP_ISCHMCHT,  desc: "Cardiopatía isquémica."}
+        cronico_osteoporosis:           {origen: SP_OSTEOPRS,  desc: "Osteoporosis."}
+        cronico_artritis:               {origen: SP_RA_OA,     desc: "Artritis reumatoide u osteoartritis."}
+        cronico_acv:                    {origen: SP_STRKETIA,  desc: "Accidente cerebrovascular o isquemia transitoria."}
+
+  hospitalario:
+    descripcion: Reclamos de internación hospitalaria.
+    grano: un segmento de reclamo (ver trampa 5)
+    filas: 66773
+    reclamos_distintos: 66705
+    columnas:
+      id_afiliado:     {origen: DESYNPUF_ID, tipo: texto, desc: "Llave hacia afiliados."}
+      id_reclamo:      {origen: CLM_ID, tipo: texto, desc: "Identificador del reclamo. NO es único por fila: ver trampa 5."}
+      segmento:        {origen: SEGMENT, tipo: entero, desc: "Número de segmento del reclamo, 1 o 2."}
+      anio:            {origen: derivada, tipo: entero, desc: "Año de fecha_inicio. Derivada e indexada. Es la forma correcta de filtrar o agrupar por año."}
+      mes:             {origen: derivada, tipo: entero, rango: "1 a 12", desc: "Mes de fecha_inicio. Derivada, indexada junto con anio."}
+      dia:             {origen: derivada, tipo: entero, rango: "1 a 31", desc: "Día del mes de fecha_inicio. Derivada."}
+      fecha_inicio:    {origen: CLM_FROM_DT, tipo: texto_fecha, desc: "Primer día del periodo facturado. Es la fecha que se usa para ubicar el reclamo en el tiempo."}
+      fecha_fin:       {origen: CLM_THRU_DT, tipo: texto_fecha, desc: "Último día del periodo facturado."}
+      fecha_ingreso:   {origen: CLM_ADMSN_DT, tipo: texto_fecha, desc: "Fecha de ingreso al hospital."}
+      fecha_alta:      {origen: NCH_BENE_DSCHRG_DT, tipo: texto_fecha, desc: "Fecha de alta o de fallecimiento."}
+      dias_estancia:   {origen: CLM_UTLZTN_DAY_CNT, tipo: entero, desc: "Días cubiertos por el asegurador. Excluye el día del alta, así que una estancia de un día aparece como 1 y hay 2266 reclamos con 0 días."}
+      id_prestador:    {origen: PRVDR_NUM, tipo: texto, desc: "Institución que prestó el servicio. 2675 distintos. Los valores fueron generados al azar en el proceso de anonimización: sirven para agrupar, no identifican hospitales reales."}
+      medico_tratante: {origen: AT_PHYSN_NPI, tipo: texto, desc: "Médico responsable del caso. También aleatorizado."}
+      medico_operante: {origen: OP_PHYSN_NPI, tipo: texto, desc: "Médico que realizó el procedimiento. Muy incompleto."}
+      monto_pagado:    {origen: CLM_PMT_AMT, tipo: decimal, desc: "Lo que pagó el asegurador por este reclamo. Es la métrica de costo por defecto. Puede ser negativa o cero: ver trampa 3."}
+      monto_pagado_tercero: {origen: NCH_PRMRY_PYR_CLM_PD_AMT, tipo: decimal, desc: "Lo que pagó otro asegurador primario."}
+      deducible:       {origen: NCH_BENE_IP_DDCTBL_AMT, tipo: decimal, desc: "Deducible a cargo del afiliado."}
+      coaseguro:       {origen: NCH_BENE_PTA_COINSRNC_LBLTY_AM, tipo: decimal, desc: "Coaseguro a cargo del afiliado."}
+      deducible_sangre: {origen: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, tipo: decimal, desc: "Deducible por sangre. Solo 176 reclamos lo tienen; ignorable salvo que se pregunte por él."}
+      per_diem:        {origen: CLM_PASS_THRU_PER_DIEM_AMT, tipo: decimal, desc: "Costos de traspaso por día (capital, docencia médica, deuda incobrable). NO están incluidos en monto_pagado. 18973 reclamos lo tienen, por 1935030 en total."}
+      grupo_drg:       {origen: CLM_DRG_CD, tipo: texto, desc: "Grupo relacionado de diagnóstico: la clasificación con la que se le paga al hospital. Es el agrupador correcto para comparar prestadores entre sí, porque normaliza la complejidad del caso. Nunca es NULL."}
+      diagnostico_ingreso: {origen: ADMTNG_ICD9_DGNS_CD, tipo: texto, desc: "Diagnóstico con el que ingresó el paciente (ICD-9)."}
+      diagnostico_1_a_10:  {origen: ICD9_DGNS_CD_1..10, tipo: texto, desc: "Diez columnas de diagnóstico. La 1 es el principal. Para buscar un diagnóstico en cualquier posición, usar la tabla diagnosticos."}
+      procedimiento_1_a_6: {origen: ICD9_PRCDR_CD_1..6, tipo: texto, desc: "Seis columnas de procedimiento (ICD-9). Muy incompletas."}
+    columnas_descartadas:
+      HCPCS_CD_1..45: >
+        Cuarenta y cinco columnas de código de servicio que en hospitalización
+        vienen prácticamente vacías: el pago de internación se calcula por DRG,
+        no por HCPCS. Se eliminaron para no inflar la tabla con nulos.
+
+  ambulatorio:
+    descripcion: Reclamos de atención ambulatoria institucional.
+    grano: un segmento de reclamo (ver trampa 5)
+    filas: 790790
+    reclamos_distintos: 779815
+    diferencias_con_hospitalario:
+      - No tiene fecha_ingreso, fecha_alta ni dias_estancia.
+      - No tiene grupo_drg: el ambulatorio no se paga por DRG.
+      - No tiene per_diem.
+      - deducible viene de NCH_BENE_PTB_DDCTBL_AMT y coaseguro de NCH_BENE_PTB_COINSRNC_AMT (Parte B, no Parte A).
+      - Las 45 columnas HCPCS sí venían pobladas aquí, pero se descartaron por el mismo criterio de ancho.
+    columnas: "Las mismas que hospitalario, menos las listadas arriba. También tiene `anio`."
+
+  diagnosticos:
+    descripcion: >
+      Tabla larga derivada: una fila por cada diagnóstico de cada reclamo.
+      Existe para no tener que escribir diez condiciones OR cuando se busca un
+      diagnóstico en cualquier posición. La construye preparar.py; no viene del CMS.
+    grano: un diagnóstico de un reclamo
+    filas: 2611067
+    columnas:
+      id_reclamo:       {tipo: texto, desc: "Llave hacia hospitalario o ambulatorio."}
+      ambito:           {tipo: texto, valores: "hospitalario, ambulatorio", desc: "De qué tabla viene el reclamo."}
+      orden:            {tipo: entero, rango: "1 a 10", desc: "Posición del diagnóstico. orden=1 es el principal; es el que se usa para atribuir el costo del reclamo a un diagnóstico."}
+      codigo:           {tipo: texto, desc: "Código CIE-9 tal como viene del CMS, sin punto decimal: '41401' es 414.01. Hay 11 897 distintos."}
+      categoria:        {tipo: texto, desc: "Los tres primeros caracteres del código, que es el nivel al que la CIE-9 agrupa enfermedades afines. Reduce 11 897 códigos a unos mil. Indexada."}
+      capitulo:         {tipo: entero, desc: "Número de capítulo de la CIE-9 (1 a 19, más 99 para el marcador 'OTHER'). Indexada. Se une con capitulos_cie9."}
+      grupo_enfermedad: {tipo: texto, desc: "Nombre del capítulo en español, desnormalizado aquí para no obligar a un join. ESTA es la columna para responder 'en qué tipo de enfermedad se concentró el costo'."}
+
+  capitulos_cie9:
+    descripcion: >
+      Tabla de referencia con los 19 capítulos de la CIE-9 en español, más una
+      entrada 99 para el marcador 'OTHER' que el CMS dejó en los datos. La
+      construye preparar.py desde catalogos.py; no viene del CMS.
+    grano: un capítulo
+    filas: 20
+    columnas:
+      capitulo: {tipo: entero, desc: "Número de capítulo. Llave."}
+      nombre:   {tipo: texto, desc: "Nombre del grupo de enfermedades en español."}
+      desde:    {tipo: texto, desc: "Primer código del rango."}
+      hasta:    {tipo: texto, desc: "Último código del rango."}
+
+  no_traducido:
+    descripcion: >
+      Lo que quedó en su codificación original, y por qué. Si el agente necesita
+      el significado de uno de estos códigos, debe decir que no lo tiene en
+      lugar de inventarlo.
+    casos:
+      - "codigo (CIE-9) en diagnosticos: 11 897 valores distintos. No hay catálogo oficial en español disponible en el proyecto. Usar `grupo_enfermedad` o `categoria` para hablar de ellos."
+      - "procedimiento_1..6 (CIE-9 de procedimientos): 4 005 valores en hospitalario. Muy incompletos y sin catálogo."
+      - "grupo_drg: 739 valores. Existe catálogo oficial del CMS pero en inglés y no se incorporó. 372 códigos cubren el 80 % del monto."
+      - "codigo_condado: 307 valores SSA, aleatorizados por el CMS."
+      - "id_prestador, medico_tratante, medico_operante: generados al azar en la anonimización. Sirven para agrupar, no identifican a nadie real."
+
+# ---------------------------------------------------------------------------
+# Las trampas. Esto es lo que separa una consulta que corre de una que acierta.
+# ---------------------------------------------------------------------------
+
+trampas:
+
+  - id: 1
+    nombre: Los indicadores crónicos venían invertidos
+    problema: >
+      En el CSV del CMS las once banderas de condición crónica usan 1=sí y 2=no.
+      Un agente que asuma la convención habitual (1=sí, 0=no) y sume la columna
+      cuenta a los sanos como enfermos y duplica la prevalencia.
+    estado: Resuelto en preparar.py. En la base ya son 1=sí, 0=no.
+    verificacion: "37.9% de los afiliados tiene cronico_diabetes = 1 (44060 de 116352), que coincide con el 37.96% que reporta el codebook del CMS para 2008."
+    regla: >
+      Sumar la columna cuenta afiliados con la condición y avg() da la
+      prevalencia. No filtrar por = 2: ese valor ya no existe en la base.
+      Se dejaron en 1/0 y no en 'Sí'/'No' justamente para que sumar sea contar.
+
+  - id: 2
+    nombre: No existe una columna de costo total
+    problema: >
+      "Costo" es ambiguo y las dos lecturas razonables dan números distintos.
+      monto_pagado es lo que desembolsó el asegurador. El costo del episodio para
+      el sistema suma además deducible, coaseguro y monto_pagado_tercero.
+    verificacion: >
+      En hospitalario: pagado por el asegurador 639260180; costo del episodio
+      740188096. La diferencia es del 15.8%, suficiente para cambiar una
+      conclusión de negocio.
+    regla: >
+      Si la pregunta dice "costo" sin precisar, el agente debe desambiguar antes
+      de consultar, u obligatoriamente declarar qué definición usó. Por defecto
+      usar monto_pagado y decirlo.
+
+  - id: 3
+    nombre: Hay montos negativos y en cero, y son válidos
+    problema: >
+      Un WHERE monto_pagado > 0 puesto por reflejo borra casos legítimos. Los
+      negativos aparecen cuando el deducible del afiliado supera lo que paga el
+      asegurador; los ceros, cuando el reclamo se cubrió íntegramente por otra vía.
+    verificacion: >
+      hospitalario: 55 reclamos negativos (mínimo -8000) y 2160 en cero.
+      ambulatorio: 2566 negativos (mínimo -100) y 30105 en cero.
+    regla: "No filtrar por signo salvo que la pregunta lo pida. Si se excluyen, decirlo."
+
+  - id: 4
+    nombre: Las fechas eran enteros, y el periodo real no es el del nombre del archivo
+    problema: >
+      En el origen las fechas son enteros AAAAMMDD: restarlas da números sin
+      sentido. Y aunque los archivos se llaman "2008_to_2010", contienen
+      reclamos de 2007.
+    estado: >
+      Resuelto en preparar.py: las fechas quedan como TEXT ISO 'AAAA-MM-DD' y
+      hay tres columnas INTEGER derivadas — `anio`, `mes` y `dia` — en las
+      tablas de reclamos, con anio y mes indexadas juntas.
+    verificacion: >
+      hospitalario va de 2007-11-27 a 2010-12-30, con 224 reclamos en 2007 y 68
+      fechas nulas. ambulatorio va de 2007-12-12 a 2010-12-31, con 312 en 2007.
+    regla: >
+      Al agrupar por año hay que esperar un 2007 pequeño. Si la pregunta habla
+      del periodo 2008-2010, filtrar explícitamente; no asumir que el archivo ya
+      viene filtrado.
+
+  - id: 5
+    nombre: Contar filas no es contar reclamos
+    problema: >
+      Un reclamo con muchas líneas de servicio viene partido en hasta dos
+      segmentos, es decir dos filas con el mismo id_reclamo. count(*) sobrestima
+      el número de reclamos y avg(monto_pagado) se calcula sobre la base equivocada.
+    verificacion: >
+      hospitalario: 66773 filas contra 66705 reclamos distintos (68 de diferencia).
+      ambulatorio: 790790 filas contra 779815 reclamos (10975 de diferencia).
+    regla: "Para contar reclamos, count(DISTINCT id_reclamo). Para sumar montos, count(*) está bien: cada segmento trae su propio monto."
+
+  - id: 6
+    nombre: Un cuarto de los afiliados no tiene ningún reclamo
+    problema: >
+      29614 de los 116352 afiliados (25.5%) no aparecen en hospitalario ni en
+      ambulatorio. Un INNER JOIN los desaparece y el gasto promedio por afiliado
+      sale inflado.
+    regla: >
+      Para métricas por afiliado (costo per cápita, frecuencia de uso), usar LEFT
+      JOIN desde afiliados y tratar el nulo como cero. Para métricas por reclamo,
+      el INNER JOIN es correcto.
+
+  - id: 7
+    nombre: Los montos anuales de afiliados son solo de 2008
+    problema: >
+      Las columnas pago_anual_* de la tabla afiliados corresponden al año 2008,
+      mientras las tablas de reclamos cubren 2008-2010. Cruzarlas sin cuidado
+      compara un año contra tres.
+    regla: >
+      Para cualquier pregunta con dimensión temporal, calcular desde las tablas
+      de reclamos. Las columnas anuales de afiliados sirven como referencia de
+      2008 o para segmentar, no para series de tiempo.
+
+  - id: 8
+    nombre: "'OTHER' no es un código de diagnóstico"
+    problema: >
+      El CMS dejó la cadena literal 'OTHER' en las columnas de diagnóstico del
+      archivo sintético: no es un código CIE-9, es un marcador de agrupación.
+      Un agente que la trate como diagnóstico la va a reportar como si fuera
+      una enfermedad, y un GROUP BY por capítulo la haría desaparecer en un NULL
+      sin que nadie lo note.
+    verificacion: >
+      Aparece 5 675 veces en la tabla diagnosticos y es el único valor que no
+      corresponde a la CIE-9. Se le asignó el capítulo 99,
+      "Sin clasificar (marcador 'OTHER' del CMS)".
+    regla: >
+      Si 'OTHER' aparece en un resultado, nombrarlo como lo que es — un valor
+      sin clasificar del origen — y no como un diagnóstico.
+
+# ---------------------------------------------------------------------------
+# Métricas de negocio, como las entiende un área de siniestralidad.
+# ---------------------------------------------------------------------------
+
+metricas:
+  costo_total:
+    definicion: sum(monto_pagado)
+    nota: Lo que desembolsó el asegurador. La métrica por defecto.
+  costo_episodio:
+    definicion: sum(monto_pagado + deducible + coaseguro + monto_pagado_tercero)
+    nota: Lo que costó la atención al sistema completo, sin importar quién pagó.
+  numero_de_reclamos:
+    definicion: count(DISTINCT id_reclamo)
+    nota: Nunca count(*). Ver trampa 5.
+  costo_promedio_por_reclamo:
+    definicion: sum(monto_pagado) / count(DISTINCT id_reclamo)
+    nota: No avg(monto_pagado), que promedia segmentos y no reclamos.
+  estancia_promedio:
+    definicion: avg(dias_estancia)
+    nota: Solo hospitalario. Comparar entre prestadores únicamente dentro del mismo grupo_drg.
+  frecuencia_de_uso:
+    definicion: count(DISTINCT id_reclamo) / count(DISTINCT id_afiliado)
+    nota: Reclamos por afiliado. Decidir si el denominador son todos los afiliados o solo los que usaron (ver trampa 6).
+  costo_per_capita:
+    definicion: sum(monto_pagado) / count(DISTINCT a.id_afiliado)
+    nota: Requiere LEFT JOIN desde afiliados para no perder a los que no usaron (ver trampa 6).
+  costo_por_grupo_de_enfermedad:
+    definicion: >
+      sum(h.monto_pagado) agrupado por d.grupo_enfermedad, uniendo diagnosticos
+      con la tabla de reclamos y filtrando d.orden = 1
+    nota: >
+      El filtro orden = 1 es obligatorio: sin él cada reclamo se cuenta hasta
+      diez veces, una por diagnóstico, y el monto se multiplica. Es la métrica
+      correcta para "en qué se concentró el costo".
+
+# ---------------------------------------------------------------------------
+# Preguntas de referencia, con la respuesta verificada.
+# Sirven como prueba de regresión del agente.
+# ---------------------------------------------------------------------------
+
+preguntas_verificadas:
+  - pregunta: "¿Cuánto se pagó en total por hospitalización en 2009?"
+    respuesta: 244810270.00
+    sql: "SELECT sum(monto_pagado) FROM hospitalario WHERE year(fecha_inicio) = 2009"
+    dificultad: facil
+
+  - pregunta: "¿Cómo cambió el costo promedio por reclamo hospitalario entre 2008 y 2009?"
+    respuesta: "2008: 9311.83 sobre 27678 reclamos. 2009: 9702.76 sobre 25231 reclamos. Alza del 4.2% en costo promedio, con 8.8% menos reclamos."
+    dificultad: media
+    por_que_rompe_una_cadena: Requiere dos agrupaciones y una comparación entre ellas.
+
+  - pregunta: "¿Qué diagnósticos principales concentran más monto pagado en hospitalización?"
+    respuesta: "V5789 (28421550, 1807 reclamos), 0389 (24438390, 1651), 41401 (23909800, 1677), 486 (17106560, 2455), 41071 (14838630, 1172)."
+    dificultad: media
+    requiere: La tabla diagnosticos con orden = 1.
+    nota: >
+      Los códigos solos no dicen nada a un humano. La versión útil de esta
+      pregunta es la siguiente, por grupo de enfermedad.
+
+  - pregunta: "¿En qué grupos de enfermedad se concentra el costo hospitalario?"
+    respuesta: >
+      Aparato circulatorio 165127000 (15901 reclamos), aparato respiratorio
+      75982000 (8453), lesiones y envenenamientos 67375420 (6050), aparato
+      digestivo 55095130 (6475), sistema osteomuscular 53467840 (4730).
+    sql: >
+      SELECT d.grupo_enfermedad, sum(h.monto_pagado), count(*)
+      FROM diagnosticos d JOIN hospitalario h ON h.id_reclamo = d.id_reclamo
+      WHERE d.ambito = 'hospitalario' AND d.orden = 1
+      GROUP BY d.grupo_enfermedad ORDER BY 2 DESC
+    dificultad: media
+    por_que_importa: >
+      Es la pregunta que un gerente entiende sin traductor. Un agente que
+      responda con códigos CIE-9 técnicamente acierta y comunicativamente falla.
+
+  - pregunta: "¿Qué prestadores tienen estancias más largas que sus pares en el mismo grupo DRG?"
+    dificultad: alta
+    por_que: >
+      Requiere calcular un promedio por DRG, compararlo contra el promedio de cada
+      prestador dentro de ese DRG, controlar por volumen mínimo para no quedarse
+      con ruido, y después valorizar la diferencia. Es la pregunta que justifica
+      un grafo con ciclos en lugar de una cadena lineal.
