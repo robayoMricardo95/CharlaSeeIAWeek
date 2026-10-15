@@ -51,28 +51,28 @@
   <h2>Qué es, qué aprendimos y qué falta</h2>
   <p class="intro">El agente de la charla anterior, en cuatro piezas:</p>
   <div class="ruta">
-    <div class="etapa e1">
+    <div class="etapa e1 fragment foco">
       <div class="num">1</div><h4>El LLM básico</h4>
       <div class="logos"><img src="img/azure.svg" alt="Azure"><img src="img/openai.svg" alt="OpenAI"><img src="img/claude.svg" alt="Claude"></div>
       <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El cerebro: un modelo que entiende y genera texto.</div>
       <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>Solo no conoce nuestros datos ni la fecha de hoy, y cobra por cada token.</div>
       <div class="bloque falta"><span class="rotulo">Falta</span>Medir cuánto cuesta cada pregunta y cada conversación: ya no es una llamada suelta al LLM, sino un <b>sistema conversacional</b>.</div>
     </div>
-    <div class="etapa e2">
+    <div class="etapa e2 fragment foco">
       <div class="num">2</div><h4>LangChain</h4>
       <div class="logos"><img src="img/langchain.svg" alt="LangChain"><img src="img/sqlite.svg" alt="SQLite"></div>
       <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El habilitador para usar el modelo: prompts, roles y herramientas del agente.</div>
       <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>Un <b>RAG de ejemplos</b>: con consultas de muestra, el modelo replica y adapta el SQL para preguntas nuevas.</div>
       <div class="bloque falta"><span class="rotulo">Falta</span>Un <b>RAG de definiciones</b>: explicarle el negocio para que, con pocos ejemplos, entienda cómo usar la base.</div>
     </div>
-    <div class="etapa e3">
+    <div class="etapa e3 fragment foco">
       <div class="num">3</div><h4>LangGraph</h4>
       <div class="logos"><img src="img/langgraph.svg" alt="LangGraph"></div>
       <div class="bloque quees"><span class="rotulo">¿Qué es?</span>El orquestador: el flujo que coordina los pasos y agentes hechos con LangChain.</div>
       <div class="bloque aprendimos"><span class="rotulo">Aprendimos</span>El agente es un ciclo: decide cuántas consultas hacer y recuerda el hilo.</div>
-      <div class="bloque falta"><span class="rotulo">Falta</span>Repartir el trabajo entre agentes y llevar los cálculos a un sandbox aislado: cifras exactas y a salvo de una <em>prompt injection</em>.</div>
+      <div class="bloque falta"><span class="rotulo">Falta</span>Repartir el trabajo entre <b>agentes especializados</b>: cada uno hace una sola cosa, así un error se detecta y se corrige donde ocurre, y el sistema crece sumando agentes.</div>
     </div>
-    <div class="etapa e4">
+    <div class="etapa e4 fragment foco">
       <div class="num">4</div><h4>API y front</h4>
       <div class="logos"><img src="img/fastapi.svg" alt="FastAPI"><img src="img/streamlit.svg" alt="Streamlit"></div>
       <div class="bloque quees"><span class="rotulo">¿Qué es?</span>La API pone el agente en producción; el front permite verlo e interactuar.</div>
@@ -80,7 +80,7 @@
       <div class="bloque falta"><span class="rotulo">Falta</span>Varios usuarios con historial, y un <b>front propio</b> para auditar quién pregunta, qué pregunta y cuánto cuesta: así medimos el impacto y el <b>retorno de la inversión</b>.</div>
     </div>
   </div>
-  <p class="frase">Lo que aprendimos es el motor. Lo que falta es el producto: de eso trata esta charla.</p>
+  <p class="frase fragment">Lo que aprendimos es el motor. Lo que falta es el producto: de eso trata esta charla.</p>
   <aside class="notes">
     Una pasada rápida por las cuatro etapas, sin volver a explicarlas: lo que dejó cada una y lo que le faltaba.
     La fila de abajo es el temario de hoy: costo por conversación (un sistema que hace varias llamadas al
@@ -100,7 +100,7 @@
   <div class="cabecera"><span class="chip e3">Versión 1 y dos caminos</span><span class="donde">Cómo perfeccionar el agente de la clase anterior</span></div>
   <h2>De la versión 1, dos caminos para mejorarla</h2>
   <div class="dos">
-    <div class="caja v1"><h3>Versión 1 · un agente ReAct, el de la clase anterior</h3>
+    <div class="caja v1 fragment foco acumula"><h3>Versión 1 · un agente ReAct, el de la clase anterior</h3>
       <div class="v1-grande">
         <div class="grafo-v1"><img src="img/grafo_agente.png" alt="Grafo de la versión 1: start, model, tools, end"></div>
         <div class="que-hace">
@@ -113,29 +113,21 @@
           </ol>
         </div>
       </div>
-      <div class="limites">
-        <div class="tarjeta">
-          <div class="etiqueta-l">Límite 1</div>
-          <div class="titulo-l">Calcula de cabeza</div>
-          <div class="cifras-l">
-            <span>Corrida 1</span><b class="mal-l">258&nbsp;206&nbsp;340 ✗</b>
-            <span>Corrida 2</span><b class="mal-l">258&nbsp;185&nbsp;900 ✗</b>
-            <span>Real</span><b class="bien-l">258&nbsp;063&nbsp;920 ✓</b>
-          </div>
-          <div class="pie-l">Pagado hospitalario 2008. Resolvió varias acciones seguidas, pero estimó la cifra.</div>
+      <div class="limite-nodo">
+        <div class="ln-lado uno">
+          <div class="ln-tit"><i>✗</i>Hoy: un solo nodo hace todo</div>
+          <div class="ln-bolsa"><b>model</b><span>entender</span><span>SQL</span><span>calcular</span><span>revisar</span><span>redactar</span></div>
+          <p>Si salta un error o una variable no es la adecuada, <b>no sabemos dónde falló ni cómo va a reaccionar</b>.</p>
         </div>
-        <div class="tarjeta">
-          <div class="etiqueta-l">Límite 2</div>
-          <div class="titulo-l">Aprende de ejemplos</div>
-          <div class="contraste">
-            <div class="si"><i>✓</i><div>Una muestra de preguntas<small>aprende a responder</small></div></div>
-            <div class="no"><i>✗</i><div>Definiciones de negocio<small>no aprende a razonar</small></div></div>
-          </div>
+        <div class="ln-lado varios">
+          <div class="ln-tit"><i>✓</i>Lo que falta: un nodo por tarea</div>
+          <div class="ln-cadena"><span>entender</span><em>→</em><span>revisar</span><em>→</em><span>calcular</span><em>→</em><span>verificar</span><em>→</em><span>redactar</span></div>
+          <p>Varios nodos de razonamiento: cada falla tiene <b>un camino definido</b> para corregirse.</p>
         </div>
       </div>
     </div>
     <div class="opciones">
-      <div class="opcion a">
+      <div class="opcion a fragment foco acumula">
         <h3><img src="img/claude.svg" alt="">Opción A · Usar Claude</h3>
         <p>Reúne el <strong>LLM</strong>; la capacidad de desarrollar <strong>skills</strong>, con el conocimiento del negocio y el mapa para usar las herramientas de Claude; un <strong>puerto MCP</strong> hacia las bases con las que se decide; y un <strong>sandbox</strong> que ejecuta, controlado, análisis, documentos y reportes HTML.</p>
         <div class="balanza">
@@ -147,7 +139,7 @@
           <div class="tiempo"><b>1,5 a 2 meses</b>producto entregable, ~95&nbsp;% de las preguntas</div>
         </div>
       </div>
-      <div class="opcion b">
+      <div class="opcion b fragment foco acumula">
         <h3>Opción B · Construirlo nosotros</h3>
         <div class="stack">
           <img src="img/python.svg" alt="Python"><img src="img/langgraph.svg" alt="LangGraph"><img src="img/fastapi.svg" alt="FastAPI">
@@ -162,7 +154,7 @@
       </div>
     </div>
   </div>
-  <p class="frase">Rápido con Claude, o con control total construyéndolo nosotros.</p>
+  <p class="frase fragment">Rápido con Claude, o con control total construyéndolo nosotros.</p>
   <aside class="notes">
     Izquierda: el agente de la clase anterior. ReAct = razona y actúa (Reason + Act); no confundir con React,
     la librería del front. Recordar cómo funcionaba y su límite: hacía las cuentas de cabeza.

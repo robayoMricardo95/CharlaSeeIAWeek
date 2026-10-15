@@ -568,3 +568,36 @@
 .falta-lado.tec .valor-card { border-top-color: #6fa3d8; }
 .falta-lado.neg .valor-card { border-top-color: #ffd166; background: rgba(255, 209, 102, 0.08); }
 .estados .est .val.resp .insight { display: inline; padding: 1px 5px; border-radius: 5px; background: #c96442; color: #fff; font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+/* Foco por clic: todas las cajas se ven, opacas; la del clic actual se enciende.
+   Uso: class="fragment foco" en cada caja, en el orden en que se presentan. */
+.reveal .slides section .fragment.foco { opacity: 0.32; visibility: inherit; filter: grayscale(0.7); transform: none; transition: opacity 0.35s ease, filter 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease; }
+.reveal .slides section .fragment.foco.current-fragment { opacity: 1; filter: none; transform: translateY(-4px); box-shadow: 0 10px 26px rgba(30, 42, 59, 0.18); }
+/* Al aparecer la conclusión, todas vuelven a verse completas. */
+.reveal .slides section:has(.frase.fragment.visible) .fragment.foco { opacity: 1; filter: none; transform: none; box-shadow: none; }
+
+/* Foco menos opaco: lo apagado se sigue leyendo. */
+.reveal .slides section .fragment.foco { opacity: 0.5; filter: grayscale(0.5); }
+/* Variante acumulativa: cada clic enciende una caja y queda encendida. */
+.reveal .slides section .fragment.foco.acumula.visible { opacity: 1; filter: none; }
+
+/* Lámina 3: el límite de la versión 1, un nodo para todo frente a un nodo por tarea. */
+.limite-nodo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; font-size: 0.8em; line-height: 1.28; }
+.limite-nodo .ln-lado { border-radius: 12px; padding: 8px 11px; display: flex; flex-direction: column; gap: 6px; }
+.limite-nodo .uno { background: #fbefee; border: 1px solid #f0c9c4; }
+.limite-nodo .varios { background: #ebf5ef; border: 1px solid #bfdccb; }
+.limite-nodo .ln-tit { font-weight: 800; color: var(--tinta); display: flex; align-items: center; gap: 6px; }
+.limite-nodo .ln-tit i { font-style: normal; width: 20px; height: 20px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; font-size: 0.8em; flex: none; }
+.limite-nodo .uno .ln-tit i { background: var(--mal); }
+.limite-nodo .varios .ln-tit i { background: #2f7d55; }
+.limite-nodo .ln-bolsa { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; padding: 6px; border-radius: 10px; border: 2px dashed #e0a49c; background: #fff; }
+.limite-nodo .ln-bolsa b { width: 100%; text-align: center; font-family: "JetBrains Mono", monospace; color: var(--mal); font-size: 0.95em; }
+.limite-nodo .ln-bolsa span { padding: 1px 6px; border-radius: 6px; background: #f6dcd8; color: #8a2f25; font-size: 0.82em; transform: rotate(-2deg); }
+.limite-nodo .ln-bolsa span:nth-child(odd) { transform: rotate(2deg); }
+.limite-nodo .ln-cadena { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; padding: 6px; border-radius: 10px; background: #fff; border: 2px solid #9cc9ae; }
+.limite-nodo .ln-cadena span { padding: 1px 6px; border-radius: 6px; background: #eeeff8; border: 1px solid var(--e3); color: var(--tinta); font-family: "JetBrains Mono", monospace; font-size: 0.78em; }
+.limite-nodo .ln-cadena em { font-style: normal; color: #2f7d55; font-weight: 800; font-size: 0.85em; }
+.limite-nodo p { margin: 0; font-size: 0.92em; color: var(--tinta); }
+.limite-nodo .uno p b { color: var(--mal); }
+.limite-nodo .varios p b { color: #2f7d55; }
+.limite-nodo { font-size: 0.88em; }
